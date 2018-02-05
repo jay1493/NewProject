@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="@dimen/d10"
+    android:orientation="horizontal"
+    android:padding="@dimen/d10">
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/food_grey_placeholder"
+        android:scaleType="centerInside"
+        android:adjustViewBounds="true"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/d5">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_recycler_header"
+            android:textColor="@color/colorLightBlack"
+            android:textStyle="bold"
+            android:maxLines="2"
+            android:text=""/>
+        <LinearLayout
+            android:id="@+id/ll_distance_recycler_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_recycler_header"
+            android:orientation="horizontal"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="right|end"
+            android:gravity="end"
+            android:padding="@dimen/d2">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_recycler_distance"
+                android:textColor="@color/colorLightBlack"
+                android:singleLine="true"
+                android:textSize="@dimen/d12sp"
+                android:paddingRight="@dimen/d10"
+                android:text=""/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorLightBlack"
+                android:singleLine="true"
+                android:textSize="@dimen/d12sp"
+                android:textStyle="italic"
+                android:text="@string/mtrs_away"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_distance_recycler_item"
+            android:padding="@dimen/d2"
+            android:id="@+id/tv_categories_recycler_item"/>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

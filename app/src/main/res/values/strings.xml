@@ -5,4 +5,5 @@
     <string name="app_title">Luncheonette</string>
     <string name="play_services_not_installed">This device is not supported.</string>
     <string name="location_not_updated">Could\'nt fetch location, try again later!</string>
+    <string name="mtrs_away">mtrs Away</string>
 </resources>
