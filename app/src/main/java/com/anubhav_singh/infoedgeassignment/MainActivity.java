@@ -16,7 +16,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.view.ViewStub;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -72,8 +74,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         setUpResources();
         if (checkPlayServices()) {
             setUpPermissions();
+        }else{
+            inflateNoPermissionsFoundError();
         }
 
+
+    }
+
+    private void inflateNoPermissionsFoundError() {
+        shimmerRecyclerView.setVisibility(View.GONE);
+        noResultFoundViewStub.setLayoutResource(R.layout.no_result_found_stub_inflater);
+        noResultFoundViewStub.inflate();
     }
 
     private void setUpResources() {
@@ -82,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         collapsingToolbarLayout.setTitle(getResources().getString(R.string.app_title));
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.black));
         customNearbyPlacesViewModel = ViewModelProviders.of(this).get(CustomNearbyPlacesViewModel.class);
+        shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
     }
 
     private boolean checkPlayServices() {
@@ -105,7 +117,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @TargetApi(Build.VERSION_CODES.M)
     private void setUpPermissions() {
         if (checkSelfPermission(Manifest.permission_group.LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            shouldShowRequestPermissionRationale(Manifest.permission_group.LOCATION);
             requestPermissions(new String[]{Manifest.permission_group.LOCATION}, ConstantUtill.LOCATION_PERMISSION_REQUEST_CODE);
+        }else{
+            shimmerRecyclerView.showShimmerAdapter();
         }
     }
 
