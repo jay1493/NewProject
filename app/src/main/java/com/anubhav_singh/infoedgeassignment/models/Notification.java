@@ -4,7 +4,9 @@ package com.anubhav_singh.infoedgeassignment.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Notification {
+import java.io.Serializable;
+
+public class Notification implements Serializable{
 
     @SerializedName("type")
     @Expose

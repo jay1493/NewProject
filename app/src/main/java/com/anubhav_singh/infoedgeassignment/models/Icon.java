@@ -4,7 +4,9 @@ package com.anubhav_singh.infoedgeassignment.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Icon {
+import java.io.Serializable;
+
+public class Icon implements Serializable{
 
     @SerializedName("prefix")
     @Expose

@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @BindView(R.id.no_result_found_stub)
     private ViewStub noResultFoundViewStub;
+    
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Location mLastLocation;

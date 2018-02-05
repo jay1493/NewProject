@@ -1,11 +1,12 @@
 
 package com.anubhav_singh.infoedgeassignment.models;
 
+import java.io.Serializable;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Specials {
+public class Specials implements Serializable{
 
     @SerializedName("count")
     @Expose

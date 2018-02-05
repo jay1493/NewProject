@@ -4,7 +4,9 @@ package com.anubhav_singh.infoedgeassignment.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class BeenHere {
+import java.io.Serializable;
+
+public class BeenHere implements Serializable{
 
     @SerializedName("lastCheckinExpiredAt")
     @Expose

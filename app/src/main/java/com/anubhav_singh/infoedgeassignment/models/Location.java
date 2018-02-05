@@ -1,11 +1,15 @@
 
 package com.anubhav_singh.infoedgeassignment.models;
 
+import android.arch.persistence.room.Ignore;
+import android.support.annotation.Nullable;
+
+import java.io.Serializable;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Location {
+public class Location implements Serializable {
 
     @SerializedName("lat")
     @Expose
@@ -15,6 +19,7 @@ public class Location {
     private Double lng;
     @SerializedName("labeledLatLngs")
     @Expose
+    @Ignore
     private List<LabeledLatLng> labeledLatLngs = null;
     @SerializedName("distance")
     @Expose
@@ -27,21 +32,27 @@ public class Location {
     private String country;
     @SerializedName("address")
     @Expose
+    @Nullable
     private String address;
     @SerializedName("crossStreet")
     @Expose
+    @Nullable
     private String crossStreet;
     @SerializedName("city")
     @Expose
+    @Nullable
     private String city;
     @SerializedName("state")
     @Expose
+    @Nullable
     private String state;
     @SerializedName("formattedAddress")
     @Expose
+    @Ignore
     private List<String> formattedAddress = null;
     @SerializedName("postalCode")
     @Expose
+    @Nullable
     private String postalCode;
 
     /**

@@ -1,57 +1,88 @@
 
 package com.anubhav_singh.infoedgeassignment.models;
 
+import android.arch.persistence.room.Embedded;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverter;
+import android.arch.persistence.room.TypeConverters;
+import android.support.annotation.Nullable;
+
+import java.io.Serializable;
 import java.util.List;
+
+import com.anubhav_singh.infoedgeassignment.database.typeConverters.CategoryListConverter;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Venue {
+@Entity(tableName = "venue")
+public class Venue implements Serializable {
+
 
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     private String id;
     @SerializedName("name")
     @Expose
     private String name;
     @SerializedName("contact")
     @Expose
+    @Ignore
     private Contact contact;
     @SerializedName("location")
     @Expose
+    @Embedded
     private Location location;
     @SerializedName("categories")
     @Expose
+    @Nullable
+    @TypeConverters(CategoryListConverter.class)
     private List<Category> categories = null;
     @SerializedName("verified")
     @Expose
+    @Ignore
     private Boolean verified;
     @SerializedName("stats")
     @Expose
+    @Ignore
     private Stats stats;
     @SerializedName("allowMenuUrlEdit")
     @Expose
+    @Ignore
     private Boolean allowMenuUrlEdit;
     @SerializedName("beenHere")
     @Expose
+    @Ignore
     private BeenHere beenHere;
     @SerializedName("specials")
     @Expose
+    @Ignore
     private Specials specials;
     @SerializedName("hereNow")
     @Expose
+    @Ignore
     private HereNow hereNow;
     @SerializedName("referralId")
     @Expose
+    @Nullable
     private String referralId;
     @SerializedName("venueChains")
     @Expose
+    @Ignore
     private List<Object> venueChains = null;
     @SerializedName("hasPerk")
     @Expose
+    @Ignore
     private Boolean hasPerk;
     @SerializedName("venueRatingBlacklisted")
     @Expose
+    @Ignore
     private Boolean venueRatingBlacklisted;
+
+    @Nullable
+    private String userRemarks;
 
     /**
      * No args constructor for use in serialization
@@ -129,11 +160,12 @@ public class Venue {
         this.location = location;
     }
 
+    @Nullable
     public List<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<Category> categories) {
+    public void setCategories(@Nullable List<Category> categories) {
         this.categories = categories;
     }
 
@@ -145,11 +177,12 @@ public class Venue {
         this.verified = verified;
     }
 
+    @Nullable
     public Stats getStats() {
         return stats;
     }
 
-    public void setStats(Stats stats) {
+    public void setStats(@Nullable Stats stats) {
         this.stats = stats;
     }
 
@@ -185,36 +218,48 @@ public class Venue {
         this.hereNow = hereNow;
     }
 
+    @Nullable
     public String getReferralId() {
         return referralId;
     }
 
-    public void setReferralId(String referralId) {
+    public void setReferralId(@Nullable String referralId) {
         this.referralId = referralId;
     }
 
+    @Nullable
     public List<Object> getVenueChains() {
         return venueChains;
     }
 
-    public void setVenueChains(List<Object> venueChains) {
+    public void setVenueChains(@Nullable List<Object> venueChains) {
         this.venueChains = venueChains;
     }
 
+    @Nullable
     public Boolean getHasPerk() {
         return hasPerk;
     }
 
-    public void setHasPerk(Boolean hasPerk) {
+    public void setHasPerk(@Nullable Boolean hasPerk) {
         this.hasPerk = hasPerk;
     }
 
+    @Nullable
     public Boolean getVenueRatingBlacklisted() {
         return venueRatingBlacklisted;
     }
 
-    public void setVenueRatingBlacklisted(Boolean venueRatingBlacklisted) {
+    public void setVenueRatingBlacklisted(@Nullable Boolean venueRatingBlacklisted) {
         this.venueRatingBlacklisted = venueRatingBlacklisted;
     }
 
+    @Nullable
+    public String getUserRemarks() {
+        return userRemarks;
+    }
+
+    public void setUserRemarks(@Nullable String userRemarks) {
+        this.userRemarks = userRemarks;
+    }
 }
