@@ -2,6 +2,8 @@ package com.anubhav_singh.infoedgeassignment;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -20,6 +22,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.anubhav_singh.infoedgeassignment.constants.ConstantUtill;
+import com.anubhav_singh.infoedgeassignment.viewModels.CustomNearbyPlacesViewModel;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -57,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Location mLastLocation;
+    private CustomNearbyPlacesViewModel customNearbyPlacesViewModel;
 
 
     @Override
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         collapsingToolbarLayout.setCollapsedTitleTextColor(Color.BLACK);
         collapsingToolbarLayout.setTitle(getResources().getString(R.string.app_title));
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.black));
+        customNearbyPlacesViewModel = ViewModelProviders.of(this).get(CustomNearbyPlacesViewModel.class);
     }
 
     private boolean checkPlayServices() {
@@ -141,9 +146,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     .getLastLocation(mGoogleApiClient);
 
             if (mLastLocation != null) {
-                double latitude = mLastLocation.getLatitude();
-                double longitude = mLastLocation.getLongitude();
-                //TODO: Do location work now...
+                customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation);
             }
         }
     }
