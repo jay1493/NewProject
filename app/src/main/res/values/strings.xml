@@ -2,4 +2,7 @@
     <string name="app_name">InfoEdgeAssignment</string>
     <string name="search_hint">Want to search by your fav. dish?</string>
     <string name="No_result_found">No result found matching your query, please search again with different parameters.</string>
+    <string name="app_title">Luncheonette</string>
+    <string name="play_services_not_installed">This device is not supported.</string>
+    <string name="location_not_updated">Could\'nt fetch location, try again later!</string>
 </resources>
