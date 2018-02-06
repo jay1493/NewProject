@@ -66,6 +66,7 @@ public class VenueAdapter extends PagedListAdapter<Venue,VenueAdapter.VenueItemV
                             categories.append(category.getPluralName());
                             categories.append(",");
                         }
+                        categories = categories.replace(categories.length()-2,categories.length(),"");
                         holder.tvCategories.setText(categories.toString());
                     }
                     if(!TextUtils.isEmpty(venue.getUserRemarks())){
