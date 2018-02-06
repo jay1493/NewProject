@@ -10,4 +10,9 @@
     <string name="edit_personal_user_review">Edit Personal User Review(Long Press Here...)</string>
     <string name="categories">Categories :</string>
     <string name="google_map_key"> AIzaSyCB-o6JyWCcWvrgRjoxfq4CM6XumugAuaw</string>
+    <string name="avg_cost">Avg. Cost :</string>
+    <string name="enter_your_review_here">Enter your review here.</string>
+    <string name="not_available">Not Available</string>
+    <string name="timings_n_a">Timings N/A</string>
+    <string name="user_review_not_avaiable">User Reviews Not Available for this Venue...</string>
 </resources>

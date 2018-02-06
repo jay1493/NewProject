@@ -57,7 +57,7 @@ public class CustomNearbyPlacesViewModel extends AndroidViewModel {
             }
         }else{
             venueSearchesObservable = ApiResponseRepository.getInstance().getVenuesFromAPI(location,apiCallsInterface, ConstantUtill.SEARCH_VENUE_QUERY_PARAM,databaseRequestDao);
-//            init();
+            init();
         }
 
     }

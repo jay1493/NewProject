@@ -19,6 +19,7 @@
     <dimen name="d50">50dp</dimen>
     <dimen name="d56">56dp</dimen>
     <dimen name="d120">120dp</dimen>
+    <dimen name="d160">160dp</dimen>
     <dimen name="d80">80dp</dimen>
     <dimen name="d88px">88px</dimen>
     <dimen name="d60">60dp</dimen>

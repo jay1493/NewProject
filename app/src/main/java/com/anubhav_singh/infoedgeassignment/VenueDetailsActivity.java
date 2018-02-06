@@ -10,15 +10,19 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.anubhav_singh.infoedgeassignment.constants.ConstantUtill;
+import com.anubhav_singh.infoedgeassignment.models.Item;
+import com.anubhav_singh.infoedgeassignment.models.Photo;
 import com.anubhav_singh.infoedgeassignment.models.Venue;
 import com.anubhav_singh.infoedgeassignment.viewModels.CustomNearbyPlacesViewModel;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -30,6 +34,7 @@ import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Anubhav-Singh on 06-02-2018.
@@ -39,15 +44,29 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
 
     @BindView(R.id.toolbar_venue_info)
     android.support.v7.widget.Toolbar toolbar;
-     Fragment fragment;
+    @BindView(R.id.iv_venue_details)
+    ImageView ivVenuImage;
+    @BindView(R.id.tv_avg_cost_venue_info)
+    TextView tvAvgVenueCost;
+    @BindView(R.id.tv_time_venue_info)
+    TextView tvTimeOfVenue;
+    @BindView(R.id.tv_user_review_venue_info)
+    TextView tvUserVenueReview;
+    @BindView(R.id.ll_personalized_review_for_venue)
+    LinearLayout llPersonalizedReview;
+    @BindView(R.id.tv_personal_review_venue_info)
+    LinearLayout tvPersonalizedReview;
+
+    Fragment fragment;
     private String venueID;
     private SupportMapFragment mapFragment;
-    private Venue venueModel;
+    private Item itemModel;
     private GoogleMap mMap;
     private CustomNearbyPlacesViewModel customNearbyPlacesViewModel;
     private int pos;
     private String updatedUserRemark;
     private LovelyTextInputDialog lovelyTextInputDialog;
+    private StringBuilder venuePicUrl;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,8 +109,49 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
 
     private void fetchParentIntent() {
         if(getIntent()!=null && getIntent().getExtras()!=null){
-            venueModel = (Venue) getIntent().getSerializableExtra(ConstantUtill.PARENT_INTENT_BUNDLE_KEY);
+            itemModel = (Item) getIntent().getSerializableExtra(ConstantUtill.PARENT_INTENT_BUNDLE_KEY);
         }
+        if(itemModel!=null){
+            if(itemModel.getTips()!=null && itemModel.getTips().size()>0 && itemModel.getTips().get(0).getUser()!=null && itemModel.getTips().get(0).getUser().getPhoto()!=null){
+                if(!TextUtils.isEmpty(itemModel.getTips().get(0).getText())){
+                    tvUserVenueReview.setText(itemModel.getTips().get(0).getText());
+                }else{
+                    tvUserVenueReview.setText(R.string.user_review_not_avaiable);
+                }
+                Photo photo = itemModel.getTips().get(0).getUser().getPhoto();
+                venuePicUrl = new StringBuilder();
+                if(!TextUtils.isEmpty(photo.getPrefix()) && !TextUtils.isEmpty(photo.getSuffix())){
+                    venuePicUrl.append(photo.getPrefix()).append("100x100").append(photo.getSuffix());
+                }
+            }
+            if(!TextUtils.isEmpty(venuePicUrl)) {
+                Glide.with(this).load(venuePicUrl).into(ivVenuImage);
+            }
+            if(itemModel.getVenue()!=null && itemModel.getVenue().getPrice()!=null){
+                if(!TextUtils.isEmpty(itemModel.getVenue().getPrice().getMessage())){
+                    tvAvgVenueCost.setText(itemModel.getVenue().getPrice().getMessage());
+                }else{
+                    tvAvgVenueCost.setText(R.string.not_available);
+                }
+            }else{
+                tvAvgVenueCost.setText(R.string.not_available);
+            }
+
+            if(itemModel.getVenue()!=null && itemModel.getVenue().getHours()!=null){
+                if(!TextUtils.isEmpty(itemModel.getVenue().getHours().getStatus())){
+                    tvTimeOfVenue.setText(itemModel.getVenue().getHours().getStatus());
+                }else{
+                    tvTimeOfVenue.setText(R.string.timings_n_a);
+                }
+            }else{
+                tvTimeOfVenue.setText(R.string.timings_n_a);
+            }
+        }
+    }
+
+    @OnClick(R.id.ll_personalized_review_for_venue)
+    public void setUpClickListenerOnPersonalzedUserReview(View view){
+
     }
 
     private void setUpResources() {
@@ -115,11 +175,8 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
     @Override
     protected void onResume() {
         super.onResume();
-        /*customNearbyPlacesViewModel.getPagedVenueListLiveData().observe(this, pagedList -> {
-            if(pagedList!=null && pagedList.get(pos)!=null) {
-                venueModel = pagedList.get(pos);
-            }
-        });*/
+
+
     }
 
     @Override
@@ -144,7 +201,8 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        if(venueModel!=null && venueModel.getLocation()!=null) {
+        if(itemModel !=null && itemModel.getVenue()!=null && itemModel.getVenue().getLocation()!=null) {
+            Venue venueModel = itemModel.getVenue();
             LatLng venue = new LatLng(venueModel.getLocation().getLat(), venueModel.getLocation().getLng());
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(venue, 16));
             Marker marker = mMap.addMarker(new MarkerOptions()

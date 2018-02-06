@@ -21,6 +21,7 @@
     <dimen name="d250">260dp</dimen>
     <dimen name="d200">210dp</dimen>
     <dimen name="d120">130dp</dimen>
+    <dimen name="d160">170dp</dimen>
     <dimen name="d80">88dp</dimen>
     <dimen name="d88px">94px</dimen>
     <dimen name="d60">70dp</dimen>
