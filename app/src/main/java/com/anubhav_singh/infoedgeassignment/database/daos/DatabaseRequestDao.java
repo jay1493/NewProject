@@ -34,7 +34,8 @@ public interface DatabaseRequestDao {
     android.arch.paging.DataSource.Factory<Integer,Venue> getVenues();
     @Query("SELECT * FROM current_active_location")
     LocationEntity getSavedLocation();
-
+    @Query("SELECT * FROM venue WHERE id LIKE :venueId")
+    Venue getVenueFromVenueId(String venueId);
 
     @Query("DELETE FROM venue")
     void deleteVenues();

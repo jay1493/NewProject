@@ -47,6 +47,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -79,6 +80,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private Location mLastLocation;
     private CustomNearbyPlacesViewModel customNearbyPlacesViewModel;
     private VenueAdapter venueAdapter;
+    private LovelyTextInputDialog lovelyTextInputDialog;
+    private String updatedUserRemark;
 
 
     @Override
@@ -114,6 +117,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         shimmerRecyclerView.setAdapter(venueAdapter);
         shimmerRecyclerView.addOnItemTouchListener(new CustomRecycleViewTouchListener(this,shimmerRecyclerView,this));
 
+    }
+
+    private void setUpMaterialDialog(int pos, View view) {
+        lovelyTextInputDialog = new LovelyTextInputDialog(this)
+                .setTopColorRes(R.color.colorPrimary)
+                .setTitle("User Reviews")
+                .setMessage("Enter the review for this venue")
+                .setConfirmButton("Save Review", new LovelyTextInputDialog.OnTextInputConfirmListener() {
+                    @Override
+                    public void onTextInputConfirmed(String text) {
+                        //Update Venue
+                       updatedUserRemark = text;
+                       EditText editText = (EditText) view.findViewById(R.id.et_user_review_recycler_item);
+                       editText.setText(updatedUserRemark);
+                       new VenueUpdateAsyncTask().execute(pos);
+                    }
+                });
+        lovelyTextInputDialog.show();
     }
 
     private boolean checkPlayServices() {
@@ -188,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
-    @OnEditorAction(R.id.main_search_bar)
+    /*@OnEditorAction(R.id.main_search_bar)
     public void onSearhDialogClicked(TextView textView, int code, KeyEvent keyEvent){
         if(code == EditorInfo.IME_ACTION_SEARCH){
             String query = textView.getText().toString().trim();
@@ -207,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             }
         }
 
-    }
+    }*/
 
     @Override
     protected void onStart() {
@@ -296,12 +317,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onItemClick(View view, int position) {
       //Fire Next Activity
+        Toast.makeText(this, "Item Clicked", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onUserReviewLongClick(View view, int position) {
        //Fire Dialog, and update venues
-
+       setUpMaterialDialog(position,view);
     }
 
     class CustomAsyncTask extends AsyncTask<Void,Void,Void>{
@@ -313,12 +335,44 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 /**Now check, if we are at same position, if yes, then don't hit service */
                 if(locationEntity.getLatitude() == mLastLocation.getLatitude() && locationEntity.getLongitude() == mLastLocation.getLongitude()){
                     //Same Location
-                    customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation,false);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation,false);
+                        }
+                    });
+
                 }else{
-                    customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation,true);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation,true);
+                        }
+                    });
                 }
             }else{
-                customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation,true);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation,true);
+                    }
+                });
+            }
+            return null;
+        }
+    }
+
+    class VenueUpdateAsyncTask extends AsyncTask<Integer,Void,Void>{
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            int pos = integers[0];
+            if(customNearbyPlacesViewModel!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData()!=null){
+               Venue venueToUpdate = customNearbyPlacesViewModel.getDatabaseRequestDao().getVenueFromVenueId(customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue().get(pos).getId());
+               if(venueToUpdate!=null){
+                   venueToUpdate.setUserRemarks(updatedUserRemark);
+                   customNearbyPlacesViewModel.getDatabaseRequestDao().updateVenues(venueToUpdate);
+               }
             }
             return null;
         }

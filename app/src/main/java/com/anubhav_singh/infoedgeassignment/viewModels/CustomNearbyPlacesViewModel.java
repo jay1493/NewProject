@@ -3,6 +3,7 @@ package com.anubhav_singh.infoedgeassignment.viewModels;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
 import android.arch.persistence.room.Room;
@@ -41,10 +42,12 @@ public class CustomNearbyPlacesViewModel extends AndroidViewModel {
                 (new PagedList.Config.Builder()).setEnablePlaceholders(true)
                         .setPrefetchDistance(ConstantUtill.PAGED_LIST_FETCH_DIST)
                         .setPageSize(ConstantUtill.PAGED_LIST_DEF_PAGE_SIZE).build();
+        init();
     }
 
     public void init(){
         pagedVenueListLiveData = (new LivePagedListBuilder<>(databaseRequestDao.getVenues(),pagedListConfig)).build();
+
     }
 
     public void setVenuesBasedOnRefereshedLocation(Location location,boolean isServiceHitRequired){

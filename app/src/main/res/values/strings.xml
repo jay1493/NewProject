@@ -7,6 +7,6 @@
     <string name="location_not_updated">Could\'nt fetch location, try again later!</string>
     <string name="mtrs_away">mtrs Away</string>
     <string name="user_review">User Review:</string>
-    <string name="edit_personal_user_review">Edit Personal User Review</string>
+    <string name="edit_personal_user_review">Edit Personal User Review(Long Press Here...)</string>
     <string name="categories">Categories :</string>
 </resources>

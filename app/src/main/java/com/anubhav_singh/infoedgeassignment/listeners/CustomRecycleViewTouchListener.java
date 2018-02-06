@@ -33,12 +33,12 @@ public class CustomRecycleViewTouchListener implements RecyclerView.OnItemTouchL
 
             @Override
             public void onLongPress(MotionEvent e) {
-                super.onLongPress(e);
                 View child=recyclerView.findChildViewUnder(e.getX(),e.getY());
                 if(child!=null && venueItemClickListener!=null){
-                    if(child instanceof EditText && child.getId() == R.id.et_user_review_recycler_item) {
+                    venueItemClickListener.onUserReviewLongClick(child, recyclerView.getChildAdapterPosition(child));
+                    /*if(child instanceof EditText && child.getId() == R.id.et_user_review_recycler_item) {
                         venueItemClickListener.onUserReviewLongClick(child, recyclerView.getChildAdapterPosition(child));
-                    }
+                    }*/
                 }
             }
         });
