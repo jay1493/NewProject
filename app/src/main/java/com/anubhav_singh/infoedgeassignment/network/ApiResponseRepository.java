@@ -10,6 +10,7 @@ import android.util.Log;
 import com.anubhav_singh.infoedgeassignment.constants.ConstantUtill;
 
 import com.anubhav_singh.infoedgeassignment.database.daos.DatabaseRequestDao;
+import com.anubhav_singh.infoedgeassignment.database.entities.LocationEntity;
 import com.anubhav_singh.infoedgeassignment.models.Venue;
 import com.anubhav_singh.infoedgeassignment.models.VenueSearches;
 
@@ -29,6 +30,8 @@ public class ApiResponseRepository {
 
     private DatabaseRequestDao databaseRequestDao;
 
+    private Location location;
+
     private MutableLiveData<PagedList<Venue>> pagedListMutableLiveData;
 
     public static ApiResponseRepository getInstance(){
@@ -38,6 +41,7 @@ public class ApiResponseRepository {
     public MutableLiveData<VenueSearches> getVenuesFromAPI(@NonNull Location location, @NonNull APICallsInterface apiCallsInterface,
                                                            @NonNull String queryParam, @NonNull DatabaseRequestDao databaseRequestDao){
         this.databaseRequestDao = databaseRequestDao;
+        this.location = location;
         final MutableLiveData<VenueSearches> venuesList = new MutableLiveData<>();
         Map<String, String> queryParams = new HashMap<>();
         StringBuilder locationBuilder = new StringBuilder();
@@ -76,6 +80,12 @@ public class ApiResponseRepository {
         protected Void doInBackground(VenueSearches... venueSearches) {
             //Deleting old venue's, and will feed new location based venue's
             if(venueSearches[0]!=null) {
+                //Also update current location table
+                databaseRequestDao.deleteCurrentLocation();
+                LocationEntity locationEntity = new LocationEntity();
+                locationEntity.setLatitude(location.getLatitude());
+                locationEntity.setLongitude(location.getLongitude());
+                databaseRequestDao.insertCurrentLocation(locationEntity);
                 databaseRequestDao.deleteVenues();
                 List<Venue> venueList = venueSearches[0].getResponse().getVenues();
                 databaseRequestDao.insertVenues(venueList);

@@ -16,6 +16,6 @@ public final class ConstantUtill {
     public static final String FOURSQUARE_VERSION = "20180205";
     public static final String SEARCH_VENUE_QUERY_PARAM = "cafe";
     public static final String VENUE_TABLE_NAME = "venue";
-    public static final int PAGED_LIST_FETCH_DIST = 10;
-    public static final int PAGED_LIST_DEF_PAGE_SIZE = 20;
+    public static final int PAGED_LIST_FETCH_DIST = 5;
+    public static final int PAGED_LIST_DEF_PAGE_SIZE = 15;
 }

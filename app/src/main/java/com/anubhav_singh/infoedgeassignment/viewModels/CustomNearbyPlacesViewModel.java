@@ -7,11 +7,13 @@ import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
 import android.arch.persistence.room.Room;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import com.anubhav_singh.infoedgeassignment.constants.ConstantUtill;
 import com.anubhav_singh.infoedgeassignment.database.ResturantsDatabase;
 import com.anubhav_singh.infoedgeassignment.database.daos.DatabaseRequestDao;
+import com.anubhav_singh.infoedgeassignment.database.entities.LocationEntity;
 import com.anubhav_singh.infoedgeassignment.models.Venue;
 import com.anubhav_singh.infoedgeassignment.models.VenueSearches;
 import com.anubhav_singh.infoedgeassignment.network.APICallsInterface;
@@ -45,10 +47,19 @@ public class CustomNearbyPlacesViewModel extends AndroidViewModel {
         pagedVenueListLiveData = (new LivePagedListBuilder<>(databaseRequestDao.getVenues(),pagedListConfig)).build();
     }
 
-    public void setVenuesBasedOnRefereshedLocation(Location location){
+    public void setVenuesBasedOnRefereshedLocation(Location location,boolean isServiceHitRequired){
         this.location = location;
-        venueSearchesObservable = ApiResponseRepository.getInstance().getVenuesFromAPI(location,apiCallsInterface, ConstantUtill.SEARCH_VENUE_QUERY_PARAM,databaseRequestDao);
-        init();
+        if(!isServiceHitRequired){
+            //Location is same, now check if we have data
+            if(pagedVenueListLiveData == null){
+                //Feed Data from Db, if exists
+                init();
+            }
+        }else{
+            venueSearchesObservable = ApiResponseRepository.getInstance().getVenuesFromAPI(location,apiCallsInterface, ConstantUtill.SEARCH_VENUE_QUERY_PARAM,databaseRequestDao);
+            init();
+        }
+
     }
 
     public LiveData<PagedList<Venue>> getPagedVenueListLiveData(){
@@ -57,6 +68,10 @@ public class CustomNearbyPlacesViewModel extends AndroidViewModel {
 
     public LiveData<VenueSearches> getVenueSearchesObservable(){
         return venueSearchesObservable;
+    }
+
+    public DatabaseRequestDao getDatabaseRequestDao(){
+        return databaseRequestDao;
     }
 
 }

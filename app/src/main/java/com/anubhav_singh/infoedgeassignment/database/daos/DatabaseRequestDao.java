@@ -6,6 +6,7 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
+import com.anubhav_singh.infoedgeassignment.database.entities.LocationEntity;
 import com.anubhav_singh.infoedgeassignment.models.Venue;
 
 import java.util.List;
@@ -21,6 +22,8 @@ public interface DatabaseRequestDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertVenues(List<Venue> venues);
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertCurrentLocation(LocationEntity locationEntity);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateVenues(Venue... venues);
@@ -29,8 +32,13 @@ public interface DatabaseRequestDao {
     android.arch.paging.DataSource.Factory<Integer,Venue> getVenue(double latitude, double longitude);
     @Query("SELECT * FROM venue")
     android.arch.paging.DataSource.Factory<Integer,Venue> getVenues();
+    @Query("SELECT * FROM current_active_location")
+    LocationEntity getSavedLocation();
+
 
     @Query("DELETE FROM venue")
     void deleteVenues();
+    @Query("DELETE FROM current_active_location")
+    void deleteCurrentLocation();
 
 }

@@ -5,9 +5,11 @@ import android.annotation.TargetApi;
 import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
+import android.arch.paging.PagedList;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,14 +21,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewStub;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.anubhav_singh.infoedgeassignment.adapters.VenueAdapter;
 import com.anubhav_singh.infoedgeassignment.constants.ConstantUtill;
+import com.anubhav_singh.infoedgeassignment.database.ResturantsDatabase;
+import com.anubhav_singh.infoedgeassignment.database.daos.DatabaseRequestDao;
+import com.anubhav_singh.infoedgeassignment.database.entities.LocationEntity;
+import com.anubhav_singh.infoedgeassignment.listeners.CustomRecycleViewTouchListener;
+import com.anubhav_singh.infoedgeassignment.listeners.VenueItemClickListener;
+import com.anubhav_singh.infoedgeassignment.models.Venue;
 import com.anubhav_singh.infoedgeassignment.viewModels.CustomNearbyPlacesViewModel;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.google.android.gms.common.ConnectionResult;
@@ -38,12 +50,11 @@ import com.google.android.gms.location.LocationServices;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnEditorAction;
+import butterknife.OnLongClick;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
-
-    @BindView(R.id.swipe_refresh_layout)
-     SwipeRefreshLayout swipeRefreshLayout;
+        LocationListener, VenueItemClickListener {
 
     @BindView(R.id.main_coordinator_layout)
      CoordinatorLayout coordinatorLayout;
@@ -101,6 +112,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         venueAdapter = new VenueAdapter(this,shimmerRecyclerView);
         shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         shimmerRecyclerView.setAdapter(venueAdapter);
+        shimmerRecyclerView.addOnItemTouchListener(new CustomRecycleViewTouchListener(this,shimmerRecyclerView,this));
+
     }
 
     private boolean checkPlayServices() {
@@ -168,9 +181,32 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     .getLastLocation(mGoogleApiClient);
             Log.e("", "displayLocation: ");
             if (mLastLocation != null) {
-                customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation);
+                new CustomAsyncTask().execute();
+
+
             }
         }
+    }
+
+    @OnEditorAction(R.id.main_search_bar)
+    public void onSearhDialogClicked(TextView textView, int code, KeyEvent keyEvent){
+        if(code == EditorInfo.IME_ACTION_SEARCH){
+            String query = textView.getText().toString().trim();
+            if(!TextUtils.isEmpty(query)){
+                if(customNearbyPlacesViewModel!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData()!=null){
+                    PagedList<Venue> copyList = customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue();
+                    //TODO: Handle later, due to short time...
+                    Toast.makeText(this, "Search is not handled right now,Sorry!", Toast.LENGTH_SHORT).show();
+                    etSearchBar.setHint(getResources().getString(R.string.search_hint));
+
+                }else{
+                    etSearchBar.setHint(getResources().getString(R.string.search_hint));
+                }
+            }else{
+                etSearchBar.setHint(getResources().getString(R.string.search_hint));
+            }
+        }
+
     }
 
     @Override
@@ -255,5 +291,36 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mLastLocation = location;
         displayLocation();
 
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+      //Fire Next Activity
+    }
+
+    @Override
+    public void onUserReviewLongClick(View view, int position) {
+       //Fire Dialog, and update venues
+
+    }
+
+    class CustomAsyncTask extends AsyncTask<Void,Void,Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            LocationEntity locationEntity = customNearbyPlacesViewModel.getDatabaseRequestDao().getSavedLocation();
+            if(locationEntity!=null){
+                /**Now check, if we are at same position, if yes, then don't hit service */
+                if(locationEntity.getLatitude() == mLastLocation.getLatitude() && locationEntity.getLongitude() == mLastLocation.getLongitude()){
+                    //Same Location
+                    customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation,false);
+                }else{
+                    customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation,true);
+                }
+            }else{
+                customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation,true);
+            }
+            return null;
+        }
     }
 }
