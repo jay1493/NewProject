@@ -1,6 +1,7 @@
 package com.anubhav_singh.infoedgeassignment;
 
 import android.app.Fragment;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -14,6 +15,7 @@ import android.widget.Toolbar;
 
 import com.anubhav_singh.infoedgeassignment.constants.ConstantUtill;
 import com.anubhav_singh.infoedgeassignment.models.Venue;
+import com.anubhav_singh.infoedgeassignment.viewModels.CustomNearbyPlacesViewModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -38,6 +40,8 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
     private SupportMapFragment mapFragment;
     private Venue venueModel;
     private GoogleMap mMap;
+    private CustomNearbyPlacesViewModel customNearbyPlacesViewModel;
+    private int pos;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,6 +50,7 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
         ButterKnife.bind(this);
         setUpResources();
         fetchParentIntent();
+
     }
 
     private void fetchParentIntent() {
@@ -62,8 +67,24 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
         }
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map_venue_info);
+        customNearbyPlacesViewModel = ViewModelProviders.of(this).get(CustomNearbyPlacesViewModel.class);
         mapFragment.getMapAsync(this);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /*customNearbyPlacesViewModel.getPagedVenueListLiveData().observe(this, pagedList -> {
+            if(pagedList!=null && pagedList.get(pos)!=null) {
+                venueModel = pagedList.get(pos);
+            }
+        });*/
     }
 
     @Override

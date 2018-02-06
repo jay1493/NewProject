@@ -33,7 +33,7 @@ public abstract class ResturantsDatabase extends RoomDatabase{
     public static ResturantsDatabase create(Context context) {
         RoomDatabase.Builder<ResturantsDatabase> builder =    Room.databaseBuilder(context.getApplicationContext(),
                 ResturantsDatabase.class,
-                ConstantUtill.VENUE_TABLE_NAME);
+                ConstantUtill.VENUE_TABLE_NAME).allowMainThreadQueries();
         return builder.build();
     }
 

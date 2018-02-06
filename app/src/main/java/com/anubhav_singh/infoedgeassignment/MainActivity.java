@@ -6,6 +6,7 @@ import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.arch.paging.PagedList;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -134,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                        String hiddenId = ((TextView) view.findViewById(R.id.hiddenVenueIdField)).getText().toString().trim();
                         new VenueUpdateAsyncTask().execute(hiddenId);
 
-                        //Below code showing disrepancies in few areas...
+                        //Below code showing disrepancies in few areas...!!
                       /* PagedList<Venue> venuePagedList =  customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue();
                        if(venuePagedList!=null && venuePagedList.get(pos)!=null) {
                            new VenueUpdateAsyncTask().execute(venuePagedList.get(pos).getId());
@@ -326,7 +327,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onItemClick(View view, int position) {
       //Fire Next Activity
-        Toast.makeText(this, "Item Clicked", Toast.LENGTH_SHORT).show();
+        if(customNearbyPlacesViewModel.getPagedVenueListLiveData()!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue()!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue().get(position)!=null) {
+            Intent intent = new Intent(MainActivity.this, VenueDetailsActivity.class);
+            intent.putExtra(ConstantUtill.PARENT_INTENT_BUNDLE_KEY, customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue().get(position));
+            startActivity(intent);
+        }else{
+            Toast.makeText(this, "Please be patient, and wait for adapter to load, try again!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
