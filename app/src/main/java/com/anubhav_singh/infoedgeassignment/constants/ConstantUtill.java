@@ -18,4 +18,6 @@ public final class ConstantUtill {
     public static final String VENUE_TABLE_NAME = "venue";
     public static final int PAGED_LIST_FETCH_DIST = 10;
     public static final int PAGED_LIST_DEF_PAGE_SIZE = 20;
+    public static final String PARENT_INTENT_BUNDLE_KEY = "PARENT_INTENT_BUNDLE_KEY";
+    public static final String DEFAULT_VENUE_INTENT_ACTION = "https://foursquare.com/v/";
 }
