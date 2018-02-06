@@ -93,7 +93,7 @@ public class VenueAdapter extends PagedListAdapter<Venue,VenueAdapter.VenueItemV
     @Override
     public void setList(PagedList<Venue> pagedList) {
         super.setList(pagedList);
-        if(shimmerRecyclerView!=null){
+        if(shimmerRecyclerView!=null && pagedList!=null && pagedList.size()>0){
             shimmerRecyclerView.hideShimmerAdapter();
         }
     }

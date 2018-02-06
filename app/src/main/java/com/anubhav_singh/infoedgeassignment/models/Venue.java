@@ -282,13 +282,9 @@ public class Venue implements Serializable {
 
         @Override
         public boolean areContentsTheSame(@NonNull Venue oldItem, @NonNull Venue newItem) {
-            return oldItem.checkContents(newItem);
+            return oldItem.equals(newItem);
         }
     };
-
-    private boolean checkContents(Venue newItem) {
-        return this.equals(newItem);
-    }
 
     @Override
     public boolean equals(Object o) {

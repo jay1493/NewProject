@@ -131,7 +131,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                        updatedUserRemark = text;
                        EditText editText = (EditText) view.findViewById(R.id.et_user_review_recycler_item);
                        editText.setText(updatedUserRemark);
-                       new VenueUpdateAsyncTask().execute(pos);
+                       PagedList<Venue> venuePagedList =  customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue();
+                       if(venuePagedList!=null && venuePagedList.get(pos)!=null) {
+                           new VenueUpdateAsyncTask().execute(venuePagedList.get(pos).getId());
+                       }else{
+                           Toast.makeText(MainActivity.this, "There seems a problem while loading paginated data", Toast.LENGTH_SHORT).show();
+                       }
                     }
                 });
         lovelyTextInputDialog.show();
@@ -362,13 +367,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
-    class VenueUpdateAsyncTask extends AsyncTask<Integer,Void,Void>{
+    class VenueUpdateAsyncTask extends AsyncTask<String,Void,Void>{
 
         @Override
-        protected Void doInBackground(Integer... integers) {
-            int pos = integers[0];
-            if(customNearbyPlacesViewModel!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData()!=null){
-               Venue venueToUpdate = customNearbyPlacesViewModel.getDatabaseRequestDao().getVenueFromVenueId(customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue().get(pos).getId());
+        protected Void doInBackground(String... integers) {
+            String pos = integers[0];
+            if(customNearbyPlacesViewModel!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData()!=null && Integer.parseInt(pos)>0){
+               Venue venueToUpdate = customNearbyPlacesViewModel.getDatabaseRequestDao().getVenueFromVenueId(pos);
                if(venueToUpdate!=null){
                    venueToUpdate.setUserRemarks(updatedUserRemark);
                    customNearbyPlacesViewModel.getDatabaseRequestDao().updateVenues(venueToUpdate);
