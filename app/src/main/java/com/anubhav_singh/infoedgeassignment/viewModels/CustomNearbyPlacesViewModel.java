@@ -27,7 +27,7 @@ import com.anubhav_singh.infoedgeassignment.network.ApiResponseRepository;
 
 public class CustomNearbyPlacesViewModel extends AndroidViewModel {
 
-    private final PagedList.Config pagedListConfig;
+    private PagedList.Config pagedListConfig;
     private DatabaseRequestDao databaseRequestDao;
     private Location location;
     private LiveData<VenueSearches> venueSearchesObservable;
@@ -38,19 +38,16 @@ public class CustomNearbyPlacesViewModel extends AndroidViewModel {
         super(application);
         apiCallsInterface = APIClient.getClient().create(APICallsInterface.class);
         databaseRequestDao = ResturantsDatabase.create(application).getDatabaseRequestDao();
-        pagedListConfig =
-                (new PagedList.Config.Builder()).setEnablePlaceholders(true)
-                        .setPrefetchDistance(ConstantUtill.PAGED_LIST_FETCH_DIST)
-                        .setPageSize(ConstantUtill.PAGED_LIST_DEF_PAGE_SIZE).build();
+
         init();
     }
 
     public void init(){
-
+        pagedListConfig =
+                (new PagedList.Config.Builder()).setEnablePlaceholders(true)
+                        .setPrefetchDistance(ConstantUtill.PAGED_LIST_FETCH_DIST)
+                        .setPageSize(ConstantUtill.PAGED_LIST_DEF_PAGE_SIZE).build();
         pagedVenueListLiveData = (new LivePagedListBuilder<>(databaseRequestDao.getVenues(),pagedListConfig)).build();
-        if(pagedVenueListLiveData == null){
-            pagedVenueListLiveData = new MutableLiveData<>();
-        }
 
     }
 
@@ -64,7 +61,7 @@ public class CustomNearbyPlacesViewModel extends AndroidViewModel {
             }
         }else{
             venueSearchesObservable = ApiResponseRepository.getInstance().getVenuesFromAPI(location,apiCallsInterface, ConstantUtill.SEARCH_VENUE_QUERY_PARAM,databaseRequestDao);
-            init();
+//            init();
         }
 
     }

@@ -20,7 +20,8 @@
     <dimen name="d75">80dp</dimen>
     <dimen name="d250">260dp</dimen>
     <dimen name="d200">210dp</dimen>
-    <dimen name="d120">120dp</dimen>
-    <dimen name="d80">80dp</dimen>
-    <dimen name="d60">60dp</dimen>
+    <dimen name="d120">130dp</dimen>
+    <dimen name="d80">88dp</dimen>
+    <dimen name="d88px">94px</dimen>
+    <dimen name="d60">70dp</dimen>
 </resources>

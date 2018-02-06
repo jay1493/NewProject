@@ -21,11 +21,12 @@
 
     <ImageView
         android:id="@+id/iv_venue_recycler_item"
-        android:layout_width="@dimen/d80"
-        android:layout_height="@dimen/d80"
+        android:layout_width="@dimen/d88px"
+        android:layout_height="@dimen/d88px"
         android:src="@drawable/food_placeholder"
         android:scaleType="centerInside"
-        android:adjustViewBounds="true"/>
+        android:adjustViewBounds="true"
+        android:layout_gravity="center_vertical" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

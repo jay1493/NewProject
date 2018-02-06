@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.anubhav_singh.infoedgeassignment.R;
 import com.anubhav_singh.infoedgeassignment.models.Category;
 import com.anubhav_singh.infoedgeassignment.models.Venue;
+import com.bumptech.glide.Glide;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 
 import butterknife.BindView;
@@ -63,10 +64,18 @@ public class VenueAdapter extends PagedListAdapter<Venue,VenueAdapter.VenueItemV
                     }
                     if(venue.getCategories()!=null && venue.getCategories().size()>0){
                         StringBuilder categories = new StringBuilder();
+                        StringBuilder categoryUrl = new StringBuilder();
                         for(Category category : venue.getCategories()){
+                            if(category.getIcon()!=null && !TextUtils.isEmpty(category.getIcon().getPrefix()) && !TextUtils.isEmpty(category.getIcon().getSuffix())){
+                                categoryUrl = new StringBuilder();
+                                categoryUrl.append(category.getIcon().getPrefix());
+                                categoryUrl.append("bg_88");
+                                categoryUrl.append(category.getIcon().getSuffix());
+                            }
                             categories.append(category.getPluralName());
                             categories.append(",");
                         }
+                        Glide.with(context).load(categoryUrl.toString()).into(holder.venueImage);
                         categories = categories.replace(categories.length()-2,categories.length(),"");
                         holder.tvCategories.setText(categories.toString());
                     }

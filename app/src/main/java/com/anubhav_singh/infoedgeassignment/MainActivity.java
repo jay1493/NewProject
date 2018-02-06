@@ -183,7 +183,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .addApi(LocationServices.API).build();
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(ConstantUtill.UPDATE_INTERVAL);
-        mLocationRequest.setFastestInterval(ConstantUtill.FATEST_INTERVAL);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setSmallestDisplacement(ConstantUtill.DISPLACEMENT);
     }
@@ -342,43 +341,31 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
        setUpMaterialDialog(position,view);
     }
 
-    class CustomAsyncTask extends AsyncTask<Void,Void,Void>{
+    class CustomAsyncTask extends AsyncTask<Void,Void,LocationEntity>{
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected LocationEntity doInBackground(Void... voids) {
             LocationEntity locationEntity = customNearbyPlacesViewModel.getDatabaseRequestDao().getSavedLocation();
+            return locationEntity;
+        }
+
+        @Override
+        protected void onPostExecute(LocationEntity locationEntity) {
+            super.onPostExecute(locationEntity);
             if(locationEntity!=null){
                 /**Now check, if we are at same position, if yes, then don't hit service */
                 if(locationEntity.getLatitude() == mLastLocation.getLatitude() && locationEntity.getLongitude() == mLastLocation.getLongitude()){
-                    //Same Location
+                    /*//Same Location
                     if(venueAdapter.getCurrentList()==null || venueAdapter.getCurrentList()!=null && venueAdapter.getCurrentList().size() == 0) {
                         //Only then load, otherwise don't
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation, false);
-
-                            }
-                        });
-                    }
+                        customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation, false);
+                    }*/
                 }else{
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation,true);
-                        }
-                    });
+                    customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation,true);
                 }
             }else{
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation,true);
-                    }
-                });
+                customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation,true);
             }
-            return null;
         }
     }
 
@@ -392,6 +379,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                if(venueToUpdate!=null){
                    venueToUpdate.setUserRemarks(updatedUserRemark);
                    customNearbyPlacesViewModel.getDatabaseRequestDao().updateVenues(venueToUpdate);
+                   customNearbyPlacesViewModel.init();
                }
             }
             return null;

@@ -294,21 +294,13 @@ public class Venue implements Serializable {
         Venue venue = (Venue) o;
 
         if (id != null ? !id.equals(venue.id) : venue.id != null) return false;
-        if (name != null ? !name.equals(venue.name) : venue.name != null) return false;
-        if (location != null ? !location.equals(venue.location) : venue.location != null)
-            return false;
-        if (categories != null ? !categories.equals(venue.categories) : venue.categories != null)
-            return false;
-        return userRemarks != null ? userRemarks.equals(venue.userRemarks) : venue.userRemarks == null;
+        return name != null ? name.equals(venue.name) : venue.name == null;
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (location != null ? location.hashCode() : 0);
-        result = 31 * result + (categories != null ? categories.hashCode() : 0);
-        result = 31 * result + (userRemarks != null ? userRemarks.hashCode() : 0);
         return result;
     }
 }
