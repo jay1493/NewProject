@@ -46,7 +46,11 @@ public class CustomNearbyPlacesViewModel extends AndroidViewModel {
     }
 
     public void init(){
+        if(pagedVenueListLiveData == null){
+            pagedVenueListLiveData = new MutableLiveData<>();
+        }
         pagedVenueListLiveData = (new LivePagedListBuilder<>(databaseRequestDao.getVenues(),pagedListConfig)).build();
+
 
     }
 

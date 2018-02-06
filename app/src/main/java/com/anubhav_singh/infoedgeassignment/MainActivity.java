@@ -131,12 +131,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                        updatedUserRemark = text;
                        EditText editText = (EditText) view.findViewById(R.id.et_user_review_recycler_item);
                        editText.setText(updatedUserRemark);
-                       PagedList<Venue> venuePagedList =  customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue();
+                       String hiddenId = ((TextView) view.findViewById(R.id.hiddenVenueIdField)).getText().toString().trim();
+                        new VenueUpdateAsyncTask().execute(hiddenId);
+
+                        //Below code showing disrepancies in few areas...
+                      /* PagedList<Venue> venuePagedList =  customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue();
                        if(venuePagedList!=null && venuePagedList.get(pos)!=null) {
                            new VenueUpdateAsyncTask().execute(venuePagedList.get(pos).getId());
                        }else{
                            Toast.makeText(MainActivity.this, "There seems a problem while loading paginated data", Toast.LENGTH_SHORT).show();
-                       }
+                       }*/
                     }
                 });
         lovelyTextInputDialog.show();
@@ -340,13 +344,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 /**Now check, if we are at same position, if yes, then don't hit service */
                 if(locationEntity.getLatitude() == mLastLocation.getLatitude() && locationEntity.getLongitude() == mLastLocation.getLongitude()){
                     //Same Location
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation,false);
-                        }
-                    });
+                    if(venueAdapter.getCurrentList()==null || venueAdapter.getCurrentList()!=null && venueAdapter.getCurrentList().size() == 0) {
+                        //Only then load, otherwise don't
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
 
+                                customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation, false);
+
+                            }
+                        });
+                    }
                 }else{
                     runOnUiThread(new Runnable() {
                         @Override
@@ -372,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         @Override
         protected Void doInBackground(String... integers) {
             String pos = integers[0];
-            if(customNearbyPlacesViewModel!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData()!=null && Integer.parseInt(pos)>0){
+            if(customNearbyPlacesViewModel!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData()!=null){
                Venue venueToUpdate = customNearbyPlacesViewModel.getDatabaseRequestDao().getVenueFromVenueId(pos);
                if(venueToUpdate!=null){
                    venueToUpdate.setUserRemarks(updatedUserRemark);

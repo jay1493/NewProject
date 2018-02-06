@@ -56,6 +56,7 @@ public class VenueAdapter extends PagedListAdapter<Venue,VenueAdapter.VenueItemV
             case 0:
                 Venue venue = getItem(position);
                 if(venue!=null){
+                    holder.tvHiddenIdField.setText(venue.getId());
                     holder.tvVenueName.setText(venue.getName());
                     if(venue.getLocation()!=null) {
                         holder.tvDistanceToLocation.setText(String.valueOf(venue.getLocation().getDistance()));
@@ -72,6 +73,7 @@ public class VenueAdapter extends PagedListAdapter<Venue,VenueAdapter.VenueItemV
                     if(!TextUtils.isEmpty(venue.getUserRemarks())){
                         holder.etUserRemarks.setText(venue.getUserRemarks());
                     }else{
+                        holder.etUserRemarks.setText("");
                         holder.etUserRemarks.setHint(context.getResources().getString(R.string.edit_personal_user_review));
                     }
                 }
@@ -108,6 +110,8 @@ public class VenueAdapter extends PagedListAdapter<Venue,VenueAdapter.VenueItemV
         TextView tvDistanceToLocation;
         @Nullable @BindView(R.id.tv_categories_recycler_item)
         TextView tvCategories;
+        @Nullable @BindView(R.id.hiddenVenueIdField)
+        TextView tvHiddenIdField;
         @Nullable @BindView(R.id.et_user_review_recycler_item)
         EditText etUserRemarks;
 
