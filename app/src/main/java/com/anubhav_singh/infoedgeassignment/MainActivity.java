@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.EditText;
@@ -42,25 +43,25 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         LocationListener {
 
     @BindView(R.id.swipe_refresh_layout)
-    private SwipeRefreshLayout swipeRefreshLayout;
+     SwipeRefreshLayout swipeRefreshLayout;
 
     @BindView(R.id.main_coordinator_layout)
-    private CoordinatorLayout coordinatorLayout;
+     CoordinatorLayout coordinatorLayout;
 
     @BindView(R.id.main_collapsing_toolbar)
-    private CollapsingToolbarLayout collapsingToolbarLayout;
+     CollapsingToolbarLayout collapsingToolbarLayout;
 
     @BindView(R.id.main_search_bar)
-    private EditText etSearchBar;
+     EditText etSearchBar;
 
     @BindView(R.id.tool_bar)
-    private Toolbar toolbar;
+     Toolbar toolbar;
 
     @BindView(R.id.main_shimmer_list)
-    private ShimmerRecyclerView shimmerRecyclerView;
+     ShimmerRecyclerView shimmerRecyclerView;
 
     @BindView(R.id.no_result_found_stub)
-    private ViewStub noResultFoundViewStub;
+     ViewStub noResultFoundViewStub;
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -95,10 +96,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         setSupportActionBar(toolbar);
         collapsingToolbarLayout.setCollapsedTitleTextColor(Color.BLACK);
         collapsingToolbarLayout.setTitle(getResources().getString(R.string.app_title));
-        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.black));
+        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.white));
         customNearbyPlacesViewModel = ViewModelProviders.of(this).get(CustomNearbyPlacesViewModel.class);
-        shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         venueAdapter = new VenueAdapter(this,shimmerRecyclerView);
+        shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         shimmerRecyclerView.setAdapter(venueAdapter);
     }
 
@@ -122,10 +123,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @TargetApi(Build.VERSION_CODES.M)
     private void setUpPermissions() {
-        if (checkSelfPermission(Manifest.permission_group.LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            shouldShowRequestPermissionRationale(Manifest.permission_group.LOCATION);
-            requestPermissions(new String[]{Manifest.permission_group.LOCATION}, ConstantUtill.LOCATION_PERMISSION_REQUEST_CODE);
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ConstantUtill.LOCATION_PERMISSION_REQUEST_CODE);
         }else{
+            setUpLocationRequests();
             shimmerRecyclerView.showShimmerAdapter();
         }
     }
@@ -165,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }else {
             mLastLocation = LocationServices.FusedLocationApi
                     .getLastLocation(mGoogleApiClient);
-
+            Log.e("", "displayLocation: ");
             if (mLastLocation != null) {
                 customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation);
             }
@@ -186,19 +187,23 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onResume() {
         super.onResume();
-        if (mGoogleApiClient.isConnected()) {
+        if (mGoogleApiClient!=null && mGoogleApiClient.isConnected()) {
             startLocationUpdates();
         }
-        customNearbyPlacesViewModel.getPagedVenueListLiveData().observe(this,pagedList -> {
-            venueAdapter.setList(pagedList);
-        });
+        if(customNearbyPlacesViewModel!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData()!=null) {
+            customNearbyPlacesViewModel.getPagedVenueListLiveData().observe(this, pagedList -> {
+                venueAdapter.setList(pagedList);
+            });
+        }
 
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        stopLocationUpdates();
+        if(mGoogleApiClient!=null && mGoogleApiClient.isConnected()) {
+            stopLocationUpdates();
+        }
     }
 
     @Override
@@ -216,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             case ConstantUtill.LOCATION_PERMISSION_REQUEST_CODE:
                 if(grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                    setUpLocationRequests();
+                    shimmerRecyclerView.showShimmerAdapter();
                 }else{
                     setUpPermissions();
                 }
@@ -228,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onConnected(@Nullable Bundle bundle) {
         displayLocation();
         startLocationUpdates();
+        Log.e("", "onConnected: ");
     }
 
 

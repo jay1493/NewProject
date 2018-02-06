@@ -58,6 +58,7 @@ public class ApiResponseRepository {
                  *
                  * Start background thread here to update venue's
                  */
+                Log.e("", "onResponse: " );
                 new CustomAsyncTask().execute(response.body());
             }
 

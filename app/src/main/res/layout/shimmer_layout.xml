@@ -14,58 +14,55 @@
         android:layout_gravity="center"
         android:layout_margin="16dp"
         android:background="@color/demo_dark_transparent" />-->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="6dp"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/activity_vertical_margin"
-        android:background="@color/demo_dark_transparent" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:elevation="@dimen/d10"
         android:orientation="horizontal"
-        android:layout_gravity="center"
-        android:weightSum="10">
+        android:padding="@dimen/d10">
+
         <View
-            android:layout_width="0dp"
-            android:layout_weight="5"
-            android:layout_height="@dimen/d6"
-            android:layout_margin="@dimen/d5"
-            android:background="@color/demo_dark_transparent" />
-        <View
-            android:layout_width="0dp"
-            android:layout_height="@dimen/d6"
-            android:layout_weight="5"
-            android:layout_margin="@dimen/d5"
-            android:background="@color/demo_dark_transparent" />
+            android:id="@+id/iv_venue_recycler_item"
+            android:layout_width="@dimen/d80"
+            android:layout_height="@dimen/d80"
+            android:background="@color/demo_dark_transparent"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/d5"
+            android:orientation="vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/d10"
+                android:background="@color/demo_dark_transparent"
+                android:layout_marginBottom="@dimen/d10"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/d10"
+                android:background="@color/demo_dark_transparent"
+                android:layout_marginBottom="@dimen/d30" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/d10"
+                android:background="@color/demo_dark_transparent" />
+
+        </LinearLayout>
+
+
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/d5"
-        android:weightSum="10">
-        <View
-            android:layout_width="0dp"
-            android:layout_weight="5"
-            android:layout_height="@dimen/d6"
-            android:layout_margin="@dimen/d5"
-            android:background="@color/demo_dark_transparent" />
-        <View
-            android:layout_width="0dp"
-            android:layout_height="@dimen/d6"
-            android:layout_weight="5"
-            android:layout_margin="@dimen/d5"
-            android:background="@color/demo_dark_transparent" />
-    </LinearLayout>
-
-
-
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/d6"
-        android:layout_margin="@dimen/d20"
-        android:background="@color/demo_dark_transparent" />
+        android:layout_height="1dp"
+        android:paddingTop="@dimen/d2"
+        android:background="@color/colorLightBlack"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/d10"
+        android:background="@color/demo_dark_transparent"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:paddingTop="@dimen/d2"
+        android:background="@color/colorLightBlack"/>
 
 </LinearLayout>

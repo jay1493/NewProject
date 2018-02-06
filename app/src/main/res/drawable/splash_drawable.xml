@@ -2,8 +2,8 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" android:opacity="opaque">
 
     <item android:drawable="@color/colorWhite"/>
-    <item>
-      <bitmap android:src="@drawable/resturants_logo" android:gravity="center_horizontal|center_vertical"/>
+    <item android:right="@dimen/d10" android:left="@dimen/d10">
+      <bitmap android:src="@drawable/resturants_logo"  android:gravity="center_horizontal|center_vertical" />
     </item>
 
 </layer-list>

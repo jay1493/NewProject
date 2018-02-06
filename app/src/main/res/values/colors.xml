@@ -9,4 +9,5 @@
     <color name="colorDarkGrey">#b3a8a8</color>
     <color name="colorLightBlack">#1a1a1a</color>
     <color name="demo_dark_transparent">#24000000</color>
+    <color name="colorDarkerBrown">#af440a</color>
 </resources>

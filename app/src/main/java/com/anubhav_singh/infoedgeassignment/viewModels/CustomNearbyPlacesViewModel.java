@@ -37,8 +37,8 @@ public class CustomNearbyPlacesViewModel extends AndroidViewModel {
         databaseRequestDao = ResturantsDatabase.create(application).getDatabaseRequestDao();
         pagedListConfig =
                 (new PagedList.Config.Builder()).setEnablePlaceholders(true)
-                        .setPrefetchDistance(10)
-                        .setPageSize(20).build();
+                        .setPrefetchDistance(ConstantUtill.PAGED_LIST_FETCH_DIST)
+                        .setPageSize(ConstantUtill.PAGED_LIST_DEF_PAGE_SIZE).build();
     }
 
     public void init(){

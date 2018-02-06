@@ -4,6 +4,7 @@ import android.arch.paging.PagedList;
 import android.arch.paging.PagedListAdapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.recyclerview.extensions.DiffCallback;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -57,7 +58,7 @@ public class VenueAdapter extends PagedListAdapter<Venue,VenueAdapter.VenueItemV
                 if(venue!=null){
                     holder.tvVenueName.setText(venue.getName());
                     if(venue.getLocation()!=null) {
-                        holder.tvDistanceToLocation.setText(venue.getLocation().getDistance());
+                        holder.tvDistanceToLocation.setText(String.valueOf(venue.getLocation().getDistance()));
                     }
                     if(venue.getCategories()!=null && venue.getCategories().size()>0){
                         StringBuilder categories = new StringBuilder();
@@ -98,16 +99,16 @@ public class VenueAdapter extends PagedListAdapter<Venue,VenueAdapter.VenueItemV
 
     class VenueItemViewHolder extends RecyclerView.ViewHolder{
 
-        @BindView(R.id.iv_venue_recycler_item)
-        private ImageView venueImage;
-        @BindView(R.id.tv_recycler_header)
-        private TextView tvVenueName;
-        @BindView(R.id.tv_recycler_distance)
-        private TextView tvDistanceToLocation;
-        @BindView(R.id.tv_categories_recycler_item)
-        private TextView tvCategories;
-        @BindView(R.id.et_user_review_recycler_item)
-        private EditText etUserRemarks;
+        @Nullable @BindView(R.id.iv_venue_recycler_item)
+        ImageView venueImage;
+        @Nullable @BindView(R.id.tv_recycler_header)
+        TextView tvVenueName;
+        @Nullable @BindView(R.id.tv_recycler_distance)
+        TextView tvDistanceToLocation;
+        @Nullable @BindView(R.id.tv_categories_recycler_item)
+        TextView tvCategories;
+        @Nullable @BindView(R.id.et_user_review_recycler_item)
+        EditText etUserRemarks;
 
 
 
