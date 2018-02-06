@@ -1,6 +1,9 @@
 
 package com.anubhav_singh.infoedgeassignment.models;
 
+import android.arch.persistence.room.Embedded;
+import android.arch.persistence.room.Ignore;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -10,6 +13,7 @@ public class Category implements Serializable{
 
     @SerializedName("id")
     @Expose
+    @Ignore
     private String id;
     @SerializedName("name")
     @Expose
@@ -22,36 +26,11 @@ public class Category implements Serializable{
     private String shortName;
     @SerializedName("icon")
     @Expose
+    @Embedded
     private Icon icon;
     @SerializedName("primary")
     @Expose
     private Boolean primary;
-
-    /**
-     * No args constructor for use in serialization
-     * 
-     */
-    public Category() {
-    }
-
-    /**
-     * 
-     * @param id
-     * @param icon
-     * @param primary
-     * @param name
-     * @param shortName
-     * @param pluralName
-     */
-    public Category(String id, String name, String pluralName, String shortName, Icon icon, Boolean primary) {
-        super();
-        this.id = id;
-        this.name = name;
-        this.pluralName = pluralName;
-        this.shortName = shortName;
-        this.icon = icon;
-        this.primary = primary;
-    }
 
     public String getId() {
         return id;

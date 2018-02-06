@@ -21,8 +21,8 @@
 
     <ImageView
         android:id="@+id/iv_venue_recycler_item"
-        android:layout_width="@dimen/d88px"
-        android:layout_height="@dimen/d88px"
+        android:layout_width="@dimen/d80"
+        android:layout_height="@dimen/d80"
         android:src="@drawable/food_placeholder"
         android:scaleType="centerInside"
         android:adjustViewBounds="true"
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/tv_recycler_header"
             android:maxLines="2"
-            android:text=""
+            android:text="Default Name"
             android:textColor="@color/cardview_dark_background"
             android:textStyle="bold"/>
         <LinearLayout
@@ -45,33 +45,69 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_recycler_header"
             android:orientation="horizontal"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_gravity="right|end"
-            android:gravity="end"
-            android:padding="@dimen/d2">
-            <TextView
-                android:layout_width="wrap_content"
+            android:padding="@dimen/d2"
+            android:weightSum="10">
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_weight="8"
                 android:layout_height="wrap_content"
-                android:id="@+id/hiddenVenueIdField"
-                android:visibility="gone"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tv_recycler_distance"
-                android:textColor="@color/colorLightBlack"
-                android:singleLine="true"
-                android:textSize="@dimen/d12sp"
-                android:paddingRight="@dimen/d10"
-                android:text=""/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorLightBlack"
-                android:singleLine="true"
-                android:textSize="@dimen/d12sp"
-                android:textStyle="italic"
-                android:text="@string/mtrs_away"/>
+                android:padding="@dimen/d5">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_recycler_sector_addr"
+                        android:text="Sector 76,"
+                        android:textColor="@color/colorLightBlack"
+                        android:textSize="@dimen/d12sp"
+                        android:paddingEnd="@dimen/d10"
+                        android:paddingRight="@dimen/d10"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/hiddenVenueIdField"
+                        android:visibility="gone"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_recycler_distance"
+                        android:textColor="@color/colorLightBlack"
+                        android:singleLine="true"
+                        android:textSize="@dimen/d12sp"
+                        android:paddingEnd="@dimen/d5"
+                        android:paddingRight="@dimen/d5"
+                        android:text="3.4"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorLightBlack"
+                        android:singleLine="true"
+                        android:textSize="@dimen/d12sp"
+                        android:textStyle="italic"
+                        android:text="@string/mtrs_away"/>
+
+                </LinearLayout>
+            </RelativeLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:id="@+id/tv_rating_recycler"
+                    android:text="1.0"
+                    android:textSize="@dimen/d15sp"
+                    android:gravity="center"
+                    android:textColor="@color/colorWhite"
+                    android:background="@color/colorDarkerBrown"/>
+            </LinearLayout>
+
+
         </LinearLayout>
         <LinearLayout
             android:id="@+id/ll_category_recycler_item"
@@ -102,7 +138,7 @@
 
 
 </LinearLayout>
- <View
+ <!--<View
      android:layout_width="match_parent"
      android:layout_height="1dp"
      android:paddingTop="@dimen/d2"
@@ -130,7 +166,7 @@
             android:focusableInTouchMode="false"
             android:textSize="@dimen/d12sp"
             android:background="@android:color/transparent"/>
-    </LinearLayout>
+    </LinearLayout>-->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

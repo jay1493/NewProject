@@ -11,6 +11,9 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toolbar;
 
 import com.anubhav_singh.infoedgeassignment.constants.ConstantUtill;
@@ -23,6 +26,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +46,8 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
     private GoogleMap mMap;
     private CustomNearbyPlacesViewModel customNearbyPlacesViewModel;
     private int pos;
+    private String updatedUserRemark;
+    private LovelyTextInputDialog lovelyTextInputDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,6 +57,35 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
         setUpResources();
         fetchParentIntent();
 
+    }
+    private void setUpMaterialDialog(int pos, View view) {
+        /**
+         * Commented
+         */
+        lovelyTextInputDialog = new LovelyTextInputDialog(this)
+                .setTopColorRes(R.color.colorPrimary)
+                .setTitle("User Reviews")
+                .setMessage("Enter the review for this venue")
+                .setConfirmButton("Save Review", new LovelyTextInputDialog.OnTextInputConfirmListener() {
+                    @Override
+                    public void onTextInputConfirmed(String text) {
+                        //Update Venue
+                        updatedUserRemark = text;
+                       /* EditText editText = (EditText) view.findViewById(R.id.et_user_review_recycler_item);
+                        editText.setText(updatedUserRemark);
+                        String hiddenId = ((TextView) view.findViewById(R.id.hiddenVenueIdField)).getText().toString().trim();
+                        new VenueUpdateAsyncTask().execute(hiddenId);*/
+
+                        //Below code showing disrepancies in few areas...!!
+                      /* PagedList<Venue> venuePagedList =  customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue();
+                       if(venuePagedList!=null && venuePagedList.get(pos)!=null) {
+                           new VenueUpdateAsyncTask().execute(venuePagedList.get(pos).getId());
+                       }else{
+                           Toast.makeText(MainActivity.this, "There seems a problem while loading paginated data", Toast.LENGTH_SHORT).show();
+                       }*/
+                    }
+                });
+        lovelyTextInputDialog.show();
     }
 
     private void fetchParentIntent() {
@@ -124,4 +159,20 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
             }
         }
     }
+    //    class VenueUpdateAsyncTask extends AsyncTask<String,Void,Void>{
+//
+//        @Override
+//        protected Void doInBackground(String... integers) {
+//            String pos = integers[0];
+//            if(customNearbyPlacesViewModel!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData()!=null){
+//               Venue venueToUpdate = customNearbyPlacesViewModel.getDatabaseRequestDao().getVenueFromVenueId(pos);
+//               if(venueToUpdate!=null){
+//                   venueToUpdate.setUserRemarks(updatedUserRemark);
+//                   customNearbyPlacesViewModel.getDatabaseRequestDao().updateVenues(venueToUpdate);
+//                   customNearbyPlacesViewModel.init();
+//               }
+//            }
+//            return null;
+//        }
+//    }
 }

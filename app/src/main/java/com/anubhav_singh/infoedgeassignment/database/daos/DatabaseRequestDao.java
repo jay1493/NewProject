@@ -7,6 +7,7 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
 import com.anubhav_singh.infoedgeassignment.database.entities.LocationEntity;
+import com.anubhav_singh.infoedgeassignment.models.Item;
 import com.anubhav_singh.infoedgeassignment.models.Venue;
 
 import java.util.List;
@@ -21,24 +22,22 @@ import javax.sql.DataSource;
 public interface DatabaseRequestDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertVenues(List<Venue> venues);
+    void insertItems(List<Item> venues);
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertCurrentLocation(LocationEntity locationEntity);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updateVenues(Venue... venues);
+    void updateItems(Item... items);
 
-    @Query("SELECT * FROM venue WHERE lat = :latitude AND lng = :longitude")
-    android.arch.paging.DataSource.Factory<Integer,Venue> getVenue(double latitude, double longitude);
-    @Query("SELECT * FROM venue")
-    android.arch.paging.DataSource.Factory<Integer,Venue> getVenues();
+    @Query("SELECT * FROM items")
+    android.arch.paging.DataSource.Factory<Integer,Item> getItems();
     @Query("SELECT * FROM current_active_location")
     LocationEntity getSavedLocation();
-    @Query("SELECT * FROM venue WHERE id LIKE :venueId")
-    Venue getVenueFromVenueId(String venueId);
+    @Query("SELECT * FROM items WHERE venueId LIKE :venueId")
+    Item getVenueFromVenueId(String venueId);
 
-    @Query("DELETE FROM venue")
-    void deleteVenues();
+    @Query("DELETE FROM items")
+    void deleteItems();
     @Query("DELETE FROM current_active_location")
     void deleteCurrentLocation();
 

@@ -1,21 +1,21 @@
 
 package com.anubhav_singh.infoedgeassignment.models;
 
+import android.arch.persistence.room.Ignore;
+
 import java.io.Serializable;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class HereNow implements Serializable{
+public class Photos implements Serializable{
 
     @SerializedName("count")
     @Expose
     private Integer count;
-    @SerializedName("summary")
-    @Expose
-    private String summary;
     @SerializedName("groups")
     @Expose
+    @Ignore
     private List<Object> groups = null;
 
     public Integer getCount() {
@@ -24,14 +24,6 @@ public class HereNow implements Serializable{
 
     public void setCount(Integer count) {
         this.count = count;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
     }
 
     public List<Object> getGroups() {

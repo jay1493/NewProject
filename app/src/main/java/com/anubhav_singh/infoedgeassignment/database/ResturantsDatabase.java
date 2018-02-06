@@ -10,13 +10,14 @@ import com.anubhav_singh.infoedgeassignment.constants.ConstantUtill;
 import com.anubhav_singh.infoedgeassignment.database.daos.DatabaseRequestDao;
 import com.anubhav_singh.infoedgeassignment.database.entities.LocationEntity;
 import com.anubhav_singh.infoedgeassignment.database.typeConverters.CategoryListConverter;
+import com.anubhav_singh.infoedgeassignment.models.Item;
 import com.anubhav_singh.infoedgeassignment.models.Venue;
 
 /**
  * Created by Anubhav-Singh on 05-02-2018.
  */
 
-@Database(entities = {Venue.class, LocationEntity.class}, version = 1)
+@Database(entities = {Item.class, LocationEntity.class}, version = 1)
 @TypeConverters({CategoryListConverter.class})
 public abstract class ResturantsDatabase extends RoomDatabase{
 

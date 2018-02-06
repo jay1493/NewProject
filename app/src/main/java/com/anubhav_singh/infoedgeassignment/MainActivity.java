@@ -2,44 +2,34 @@ package com.anubhav_singh.infoedgeassignment;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.arch.lifecycle.LifecycleObserver;
-import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
-import android.arch.paging.PagedList;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewStub;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.anubhav_singh.infoedgeassignment.adapters.VenueAdapter;
 import com.anubhav_singh.infoedgeassignment.constants.ConstantUtill;
-import com.anubhav_singh.infoedgeassignment.database.ResturantsDatabase;
-import com.anubhav_singh.infoedgeassignment.database.daos.DatabaseRequestDao;
 import com.anubhav_singh.infoedgeassignment.database.entities.LocationEntity;
 import com.anubhav_singh.infoedgeassignment.listeners.CustomRecycleViewTouchListener;
 import com.anubhav_singh.infoedgeassignment.listeners.VenueItemClickListener;
-import com.anubhav_singh.infoedgeassignment.models.Venue;
 import com.anubhav_singh.infoedgeassignment.viewModels.CustomNearbyPlacesViewModel;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.google.android.gms.common.ConnectionResult;
@@ -52,8 +42,6 @@ import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnEditorAction;
-import butterknife.OnLongClick;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         LocationListener, VenueItemClickListener {
@@ -120,33 +108,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     }
 
-    private void setUpMaterialDialog(int pos, View view) {
-        lovelyTextInputDialog = new LovelyTextInputDialog(this)
-                .setTopColorRes(R.color.colorPrimary)
-                .setTitle("User Reviews")
-                .setMessage("Enter the review for this venue")
-                .setConfirmButton("Save Review", new LovelyTextInputDialog.OnTextInputConfirmListener() {
-                    @Override
-                    public void onTextInputConfirmed(String text) {
-                        //Update Venue
-                       updatedUserRemark = text;
-                       EditText editText = (EditText) view.findViewById(R.id.et_user_review_recycler_item);
-                       editText.setText(updatedUserRemark);
-                       String hiddenId = ((TextView) view.findViewById(R.id.hiddenVenueIdField)).getText().toString().trim();
-                        new VenueUpdateAsyncTask().execute(hiddenId);
-
-                        //Below code showing disrepancies in few areas...!!
-                      /* PagedList<Venue> venuePagedList =  customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue();
-                       if(venuePagedList!=null && venuePagedList.get(pos)!=null) {
-                           new VenueUpdateAsyncTask().execute(venuePagedList.get(pos).getId());
-                       }else{
-                           Toast.makeText(MainActivity.this, "There seems a problem while loading paginated data", Toast.LENGTH_SHORT).show();
-                       }*/
-                    }
-                });
-        lovelyTextInputDialog.show();
-    }
-
     private boolean checkPlayServices() {
         int resultCode = GooglePlayServicesUtil
                 .isGooglePlayServicesAvailable(this);
@@ -211,33 +172,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     .getLastLocation(mGoogleApiClient);
             Log.e("", "displayLocation: ");
             if (mLastLocation != null) {
-                new CustomAsyncTask().execute();
+                new CustomLocationCheckAsyncTask().execute();
 
 
             }
         }
     }
-
-    /*@OnEditorAction(R.id.main_search_bar)
-    public void onSearhDialogClicked(TextView textView, int code, KeyEvent keyEvent){
-        if(code == EditorInfo.IME_ACTION_SEARCH){
-            String query = textView.getText().toString().trim();
-            if(!TextUtils.isEmpty(query)){
-                if(customNearbyPlacesViewModel!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData()!=null){
-                    PagedList<Venue> copyList = customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue();
-                    //TODO: Handle later, due to short time...
-                    Toast.makeText(this, "Search is not handled right now,Sorry!", Toast.LENGTH_SHORT).show();
-                    etSearchBar.setHint(getResources().getString(R.string.search_hint));
-
-                }else{
-                    etSearchBar.setHint(getResources().getString(R.string.search_hint));
-                }
-            }else{
-                etSearchBar.setHint(getResources().getString(R.string.search_hint));
-            }
-        }
-
-    }*/
 
     @Override
     protected void onStart() {
@@ -326,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onItemClick(View view, int position) {
       //Fire Next Activity
-        if(customNearbyPlacesViewModel.getPagedVenueListLiveData()!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue()!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue().get(position)!=null) {
+        if(customNearbyPlacesViewModel.getPagedVenueListLiveData()!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue()!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue().size()>position &&customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue().get(position)!=null) {
             Intent intent = new Intent(MainActivity.this, VenueDetailsActivity.class);
             intent.putExtra(ConstantUtill.PARENT_INTENT_BUNDLE_KEY, customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue().get(position));
             startActivity(intent);
@@ -337,11 +277,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onUserReviewLongClick(View view, int position) {
-       //Fire Dialog, and update venues
-       setUpMaterialDialog(position,view);
+       //TODO: Handle Recycler Long Click, if needed...
     }
 
-    class CustomAsyncTask extends AsyncTask<Void,Void,LocationEntity>{
+    class CustomLocationCheckAsyncTask extends AsyncTask<Void,Void,LocationEntity>{
 
         @Override
         protected LocationEntity doInBackground(Void... voids) {
@@ -369,20 +308,4 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
-    class VenueUpdateAsyncTask extends AsyncTask<String,Void,Void>{
-
-        @Override
-        protected Void doInBackground(String... integers) {
-            String pos = integers[0];
-            if(customNearbyPlacesViewModel!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData()!=null){
-               Venue venueToUpdate = customNearbyPlacesViewModel.getDatabaseRequestDao().getVenueFromVenueId(pos);
-               if(venueToUpdate!=null){
-                   venueToUpdate.setUserRemarks(updatedUserRemark);
-                   customNearbyPlacesViewModel.getDatabaseRequestDao().updateVenues(venueToUpdate);
-                   customNearbyPlacesViewModel.init();
-               }
-            }
-            return null;
-        }
-    }
 }

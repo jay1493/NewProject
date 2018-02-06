@@ -1,6 +1,6 @@
 package com.anubhav_singh.infoedgeassignment.network;
 
-import com.anubhav_singh.infoedgeassignment.models.VenueSearches;
+import com.anubhav_singh.infoedgeassignment.models.ExploreVenues;
 
 import java.util.Map;
 
@@ -14,8 +14,8 @@ import retrofit2.http.QueryMap;
 
 public interface APICallsInterface {
 
-    @GET("search")
-    Call<VenueSearches> getVenues(@QueryMap Map<String, String> options);
+    @GET("explore")
+    Call<ExploreVenues> getVenues(@QueryMap Map<String, String> options);
 
 
 }

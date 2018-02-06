@@ -8,24 +8,30 @@ import java.io.Serializable;
 
 public class BeenHere implements Serializable{
 
+    @SerializedName("count")
+    @Expose
+    private Integer count;
+    @SerializedName("marked")
+    @Expose
+    private Boolean marked;
     @SerializedName("lastCheckinExpiredAt")
     @Expose
     private Integer lastCheckinExpiredAt;
 
-    /**
-     * No args constructor for use in serialization
-     * 
-     */
-    public BeenHere() {
+    public Integer getCount() {
+        return count;
     }
 
-    /**
-     * 
-     * @param lastCheckinExpiredAt
-     */
-    public BeenHere(Integer lastCheckinExpiredAt) {
-        super();
-        this.lastCheckinExpiredAt = lastCheckinExpiredAt;
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public Boolean getMarked() {
+        return marked;
+    }
+
+    public void setMarked(Boolean marked) {
+        this.marked = marked;
     }
 
     public Integer getLastCheckinExpiredAt() {

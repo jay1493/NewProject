@@ -8,11 +8,11 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.anubhav_singh.infoedgeassignment.constants.ConstantUtill;
-
 import com.anubhav_singh.infoedgeassignment.database.daos.DatabaseRequestDao;
 import com.anubhav_singh.infoedgeassignment.database.entities.LocationEntity;
+import com.anubhav_singh.infoedgeassignment.models.ExploreVenues;
+import com.anubhav_singh.infoedgeassignment.models.Item;
 import com.anubhav_singh.infoedgeassignment.models.Venue;
-import com.anubhav_singh.infoedgeassignment.models.VenueSearches;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,11 +38,11 @@ public class ApiResponseRepository {
         return new ApiResponseRepository();
     }
 
-    public MutableLiveData<VenueSearches> getVenuesFromAPI(@NonNull Location location, @NonNull APICallsInterface apiCallsInterface,
+    public MutableLiveData<ExploreVenues> getVenuesFromAPI(@NonNull Location location, @NonNull APICallsInterface apiCallsInterface,
                                                            @NonNull String queryParam, @NonNull DatabaseRequestDao databaseRequestDao){
         this.databaseRequestDao = databaseRequestDao;
         this.location = location;
-        final MutableLiveData<VenueSearches> venuesList = new MutableLiveData<>();
+        final MutableLiveData<ExploreVenues> venuesList = new MutableLiveData<>();
         Map<String, String> queryParams = new HashMap<>();
         StringBuilder locationBuilder = new StringBuilder();
         locationBuilder.append(String.valueOf(location.getLatitude()));
@@ -53,10 +53,10 @@ public class ApiResponseRepository {
         queryParams.put("client_secret", ConstantUtill.FOUR_SQUARE_CLIENT_SECRET);
         queryParams.put("v", ConstantUtill.FOURSQUARE_VERSION);
         queryParams.put("query",queryParam);
-        Call<VenueSearches> venueSearchesCall = apiCallsInterface.getVenues(queryParams);
-        venueSearchesCall.enqueue(new Callback<VenueSearches>() {
+        Call<ExploreVenues> venueSearchesCall = apiCallsInterface.getVenues(queryParams);
+        venueSearchesCall.enqueue(new Callback<ExploreVenues>() {
             @Override
-            public void onResponse(Call<VenueSearches> call, Response<VenueSearches> response) {
+            public void onResponse(Call<ExploreVenues> call, Response<ExploreVenues> response) {
                 venuesList.setValue(response.body());
                 /**
                  *
@@ -67,17 +67,17 @@ public class ApiResponseRepository {
             }
 
             @Override
-            public void onFailure(Call<VenueSearches> call, Throwable t) {
+            public void onFailure(Call<ExploreVenues> call, Throwable t) {
                 Log.d("", "onFailure: Retrofit Searches Api Failed");
             }
         });
         return venuesList;
     }
 
-    class CustomAsyncTask extends AsyncTask<VenueSearches,Void,Void>{
+    class CustomAsyncTask extends AsyncTask<ExploreVenues,Void,Void>{
 
         @Override
-        protected Void doInBackground(VenueSearches... venueSearches) {
+        protected Void doInBackground(ExploreVenues... venueSearches) {
             //Deleting old venue's, and will feed new location based venue's
             if(venueSearches[0]!=null) {
                 //Also update current location table
@@ -86,9 +86,11 @@ public class ApiResponseRepository {
                 locationEntity.setLatitude(location.getLatitude());
                 locationEntity.setLongitude(location.getLongitude());
                 databaseRequestDao.insertCurrentLocation(locationEntity);
-                databaseRequestDao.deleteVenues();
-                List<Venue> venueList = venueSearches[0].getResponse().getVenues();
-                databaseRequestDao.insertVenues(venueList);
+                databaseRequestDao.deleteItems();
+                if(venueSearches[0].getResponse().getGroups()!=null && venueSearches[0].getResponse().getGroups().size()>0 ) {
+                    List<Item> venueList = venueSearches[0].getResponse().getGroups().get(0).getItems();
+                    databaseRequestDao.insertItems(venueList);
+                }
             }
             return null;
         }

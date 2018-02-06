@@ -6,25 +6,14 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class LabeledLatLng implements Serializable{
+public class Sw implements Serializable{
 
-    @SerializedName("label")
-    @Expose
-    private String label;
     @SerializedName("lat")
     @Expose
     private Double lat;
     @SerializedName("lng")
     @Expose
     private Double lng;
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
 
     public Double getLat() {
         return lat;

@@ -15,24 +15,6 @@ public class Meta implements Serializable{
     @Expose
     private String requestId;
 
-    /**
-     * No args constructor for use in serialization
-     * 
-     */
-    public Meta() {
-    }
-
-    /**
-     * 
-     * @param requestId
-     * @param code
-     */
-    public Meta(Integer code, String requestId) {
-        super();
-        this.code = code;
-        this.requestId = requestId;
-    }
-
     public Integer getCode() {
         return code;
     }

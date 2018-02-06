@@ -1,15 +1,10 @@
 
 package com.anubhav_singh.infoedgeassignment.models;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Embedded;
-import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.TypeConverter;
 import android.arch.persistence.room.TypeConverters;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.recyclerview.extensions.DiffCallback;
 
 import java.io.Serializable;
 import java.util.List;
@@ -18,12 +13,9 @@ import com.anubhav_singh.infoedgeassignment.database.typeConverters.CategoryList
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-@Entity(tableName = "venue")
-public class Venue implements Serializable {
+public class Venue implements Serializable{
 
-    @PrimaryKey(autoGenerate = true)
-    private long venueUniqueId;
-
+    @ColumnInfo(name = "venueId")
     @SerializedName("id")
     @Expose
     private String id;
@@ -32,7 +24,7 @@ public class Venue implements Serializable {
     private String name;
     @SerializedName("contact")
     @Expose
-    @Ignore
+    @Embedded
     private Contact contact;
     @SerializedName("location")
     @Expose
@@ -40,96 +32,51 @@ public class Venue implements Serializable {
     private Location location;
     @SerializedName("categories")
     @Expose
-    @Nullable
     @TypeConverters(CategoryListConverter.class)
     private List<Category> categories = null;
     @SerializedName("verified")
     @Expose
-    @Ignore
     private Boolean verified;
     @SerializedName("stats")
     @Expose
     @Ignore
     private Stats stats;
+    @SerializedName("rating")
+    @Expose
+    private Double rating;
+    @SerializedName("ratingColor")
+    @Expose
+    private String ratingColor;
+    @SerializedName("ratingSignals")
+    @Expose
+    private Integer ratingSignals;
     @SerializedName("allowMenuUrlEdit")
     @Expose
-    @Ignore
     private Boolean allowMenuUrlEdit;
     @SerializedName("beenHere")
     @Expose
     @Ignore
     private BeenHere beenHere;
-    @SerializedName("specials")
+    @SerializedName("hours")
     @Expose
     @Ignore
-    private Specials specials;
+    @Embedded
+    private Hours hours;
+    @SerializedName("photos")
+    @Expose
+    @Ignore
+    private Photos photos;
     @SerializedName("hereNow")
     @Expose
     @Ignore
     private HereNow hereNow;
-    @SerializedName("referralId")
+    @SerializedName("price")
     @Expose
-    @Nullable
-    private String referralId;
-    @SerializedName("venueChains")
+    @Embedded
+    private Price price;
+    @SerializedName("url")
     @Expose
-    @Ignore
-    private List<Object> venueChains = null;
-    @SerializedName("hasPerk")
-    @Expose
-    @Ignore
-    private Boolean hasPerk;
-    @SerializedName("venueRatingBlacklisted")
-    @Expose
-    @Ignore
-    private Boolean venueRatingBlacklisted;
-
-    @Nullable
-    private String userRemarks;
-
-    /**
-     * No args constructor for use in serialization
-     * 
-     */
-    public Venue() {
-    }
-
-    /**
-     * 
-     * @param venueChains
-     * @param location
-     * @param stats
-     * @param allowMenuUrlEdit
-     * @param hereNow
-     * @param contact
-     * @param specials
-     * @param id
-     * @param referralId
-     * @param venueRatingBlacklisted
-     * @param verified
-     * @param name
-     * @param categories
-     * @param beenHere
-     * @param hasPerk
-     */
-    public Venue(String id, String name, Contact contact, Location location, List<Category> categories, Boolean verified, Stats stats, Boolean allowMenuUrlEdit, BeenHere beenHere, Specials specials, HereNow hereNow, String referralId, List<Object> venueChains, Boolean hasPerk, Boolean venueRatingBlacklisted) {
-        super();
-        this.id = id;
-        this.name = name;
-        this.contact = contact;
-        this.location = location;
-        this.categories = categories;
-        this.verified = verified;
-        this.stats = stats;
-        this.allowMenuUrlEdit = allowMenuUrlEdit;
-        this.beenHere = beenHere;
-        this.specials = specials;
-        this.hereNow = hereNow;
-        this.referralId = referralId;
-        this.venueChains = venueChains;
-        this.hasPerk = hasPerk;
-        this.venueRatingBlacklisted = venueRatingBlacklisted;
-    }
+    private String url;
 
     public String getId() {
         return id;
@@ -163,12 +110,11 @@ public class Venue implements Serializable {
         this.location = location;
     }
 
-    @Nullable
     public List<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(@Nullable List<Category> categories) {
+    public void setCategories(List<Category> categories) {
         this.categories = categories;
     }
 
@@ -180,13 +126,36 @@ public class Venue implements Serializable {
         this.verified = verified;
     }
 
-    @Nullable
     public Stats getStats() {
         return stats;
     }
 
-    public void setStats(@Nullable Stats stats) {
+    public void setStats(Stats stats) {
         this.stats = stats;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    public String getRatingColor() {
+        return ratingColor;
+    }
+
+    public void setRatingColor(String ratingColor) {
+        this.ratingColor = ratingColor;
+    }
+
+    public Integer getRatingSignals() {
+        return ratingSignals;
+    }
+
+    public void setRatingSignals(Integer ratingSignals) {
+        this.ratingSignals = ratingSignals;
     }
 
     public Boolean getAllowMenuUrlEdit() {
@@ -205,12 +174,20 @@ public class Venue implements Serializable {
         this.beenHere = beenHere;
     }
 
-    public Specials getSpecials() {
-        return specials;
+    public Hours getHours() {
+        return hours;
     }
 
-    public void setSpecials(Specials specials) {
-        this.specials = specials;
+    public void setHours(Hours hours) {
+        this.hours = hours;
+    }
+
+    public Photos getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(Photos photos) {
+        this.photos = photos;
     }
 
     public HereNow getHereNow() {
@@ -221,70 +198,21 @@ public class Venue implements Serializable {
         this.hereNow = hereNow;
     }
 
-    @Nullable
-    public String getReferralId() {
-        return referralId;
+    public Price getPrice() {
+        return price;
     }
 
-    public void setReferralId(@Nullable String referralId) {
-        this.referralId = referralId;
+    public void setPrice(Price price) {
+        this.price = price;
     }
 
-    @Nullable
-    public List<Object> getVenueChains() {
-        return venueChains;
+    public String getUrl() {
+        return url;
     }
 
-    public void setVenueChains(@Nullable List<Object> venueChains) {
-        this.venueChains = venueChains;
+    public void setUrl(String url) {
+        this.url = url;
     }
-
-    @Nullable
-    public Boolean getHasPerk() {
-        return hasPerk;
-    }
-
-    public void setHasPerk(@Nullable Boolean hasPerk) {
-        this.hasPerk = hasPerk;
-    }
-
-    @Nullable
-    public Boolean getVenueRatingBlacklisted() {
-        return venueRatingBlacklisted;
-    }
-
-    public void setVenueRatingBlacklisted(@Nullable Boolean venueRatingBlacklisted) {
-        this.venueRatingBlacklisted = venueRatingBlacklisted;
-    }
-
-    @Nullable
-    public String getUserRemarks() {
-        return userRemarks;
-    }
-
-    public void setUserRemarks(@Nullable String userRemarks) {
-        this.userRemarks = userRemarks;
-    }
-
-    public long getVenueUniqueId() {
-        return venueUniqueId;
-    }
-
-    public void setVenueUniqueId(long venueUniqueId) {
-        this.venueUniqueId = venueUniqueId;
-    }
-
-    public static DiffCallback<Venue> DIFF_CALLBACK = new DiffCallback<Venue>() {
-        @Override
-        public boolean areItemsTheSame(@NonNull Venue oldItem, @NonNull Venue newItem) {
-            return oldItem.getVenueUniqueId() == newItem.getVenueUniqueId();
-        }
-
-        @Override
-        public boolean areContentsTheSame(@NonNull Venue oldItem, @NonNull Venue newItem) {
-            return oldItem.equals(newItem);
-        }
-    };
 
     @Override
     public boolean equals(Object o) {

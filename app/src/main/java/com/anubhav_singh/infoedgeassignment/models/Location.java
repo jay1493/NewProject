@@ -2,15 +2,20 @@
 package com.anubhav_singh.infoedgeassignment.models;
 
 import android.arch.persistence.room.Ignore;
-import android.support.annotation.Nullable;
 
 import java.io.Serializable;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Location implements Serializable {
+public class Location implements Serializable{
 
+    @SerializedName("address")
+    @Expose
+    private String address;
+    @SerializedName("crossStreet")
+    @Expose
+    private String crossStreet;
     @SerializedName("lat")
     @Expose
     private Double lat;
@@ -24,73 +29,40 @@ public class Location implements Serializable {
     @SerializedName("distance")
     @Expose
     private Integer distance;
+    @SerializedName("postalCode")
+    @Expose
+    private String postalCode;
     @SerializedName("cc")
     @Expose
     private String cc;
-    @SerializedName("country")
-    @Expose
-    private String country;
-    @SerializedName("address")
-    @Expose
-    @Nullable
-    private String address;
-    @SerializedName("crossStreet")
-    @Expose
-    @Nullable
-    private String crossStreet;
     @SerializedName("city")
     @Expose
-    @Nullable
     private String city;
     @SerializedName("state")
     @Expose
-    @Nullable
     private String state;
+    @SerializedName("country")
+    @Expose
+    private String country;
     @SerializedName("formattedAddress")
     @Expose
     @Ignore
     private List<String> formattedAddress = null;
-    @SerializedName("postalCode")
-    @Expose
-    @Nullable
-    private String postalCode;
 
-    /**
-     * No args constructor for use in serialization
-     * 
-     */
-    public Location() {
+    public String getAddress() {
+        return address;
     }
 
-    /**
-     * 
-     * @param distance
-     * @param postalCode
-     * @param address
-     * @param labeledLatLngs
-     * @param state
-     * @param formattedAddress
-     * @param lng
-     * @param cc
-     * @param lat
-     * @param city
-     * @param crossStreet
-     * @param country
-     */
-    public Location(Double lat, Double lng, List<LabeledLatLng> labeledLatLngs, Integer distance, String cc, String country, String address, String crossStreet, String city, String state, List<String> formattedAddress, String postalCode) {
-        super();
-        this.lat = lat;
-        this.lng = lng;
-        this.labeledLatLngs = labeledLatLngs;
-        this.distance = distance;
-        this.cc = cc;
-        this.country = country;
+    public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getCrossStreet() {
+        return crossStreet;
+    }
+
+    public void setCrossStreet(String crossStreet) {
         this.crossStreet = crossStreet;
-        this.city = city;
-        this.state = state;
-        this.formattedAddress = formattedAddress;
-        this.postalCode = postalCode;
     }
 
     public Double getLat() {
@@ -125,36 +97,20 @@ public class Location implements Serializable {
         this.distance = distance;
     }
 
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
     public String getCc() {
         return cc;
     }
 
     public void setCc(String cc) {
         this.cc = cc;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getCrossStreet() {
-        return crossStreet;
-    }
-
-    public void setCrossStreet(String crossStreet) {
-        this.crossStreet = crossStreet;
     }
 
     public String getCity() {
@@ -173,20 +129,20 @@ public class Location implements Serializable {
         this.state = state;
     }
 
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
     public List<String> getFormattedAddress() {
         return formattedAddress;
     }
 
     public void setFormattedAddress(List<String> formattedAddress) {
         this.formattedAddress = formattedAddress;
-    }
-
-    public String getPostalCode() {
-        return postalCode;
-    }
-
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
     }
 
 }

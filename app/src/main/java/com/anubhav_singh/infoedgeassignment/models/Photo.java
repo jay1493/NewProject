@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class Icon implements Serializable{
+public class Photo implements Serializable{
 
     @SerializedName("prefix")
     @Expose

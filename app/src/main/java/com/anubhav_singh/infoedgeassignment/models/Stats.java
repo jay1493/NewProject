@@ -18,26 +18,6 @@ public class Stats implements Serializable{
     @Expose
     private Integer tipCount;
 
-    /**
-     * No args constructor for use in serialization
-     * 
-     */
-    public Stats() {
-    }
-
-    /**
-     * 
-     * @param checkinsCount
-     * @param usersCount
-     * @param tipCount
-     */
-    public Stats(Integer checkinsCount, Integer usersCount, Integer tipCount) {
-        super();
-        this.checkinsCount = checkinsCount;
-        this.usersCount = usersCount;
-        this.tipCount = tipCount;
-    }
-
     public Integer getCheckinsCount() {
         return checkinsCount;
     }
