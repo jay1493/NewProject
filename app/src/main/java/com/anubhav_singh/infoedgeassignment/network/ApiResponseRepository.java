@@ -1,12 +1,16 @@
 package com.anubhav_singh.infoedgeassignment.network;
 
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.paging.PagedList;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.anubhav_singh.infoedgeassignment.constants.ConstantUtill;
 
+import com.anubhav_singh.infoedgeassignment.database.daos.DatabaseRequestDao;
+import com.anubhav_singh.infoedgeassignment.models.Venue;
 import com.anubhav_singh.infoedgeassignment.models.VenueSearches;
 
 import java.util.HashMap;
@@ -23,12 +27,17 @@ import retrofit2.Response;
 
 public class ApiResponseRepository {
 
+    private DatabaseRequestDao databaseRequestDao;
+
+    private MutableLiveData<PagedList<Venue>> pagedListMutableLiveData;
+
     public static ApiResponseRepository getInstance(){
         return new ApiResponseRepository();
     }
 
     public MutableLiveData<VenueSearches> getVenuesFromAPI(@NonNull Location location, @NonNull APICallsInterface apiCallsInterface,
-                                                           @NonNull String queryParam){
+                                                           @NonNull String queryParam, @NonNull DatabaseRequestDao databaseRequestDao){
+        this.databaseRequestDao = databaseRequestDao;
         final MutableLiveData<VenueSearches> venuesList = new MutableLiveData<>();
         Map<String, String> queryParams = new HashMap<>();
         StringBuilder locationBuilder = new StringBuilder();
@@ -46,9 +55,10 @@ public class ApiResponseRepository {
             public void onResponse(Call<VenueSearches> call, Response<VenueSearches> response) {
                 venuesList.setValue(response.body());
                 /**
-                 * TODO:
+                 *
                  * Start background thread here to update venue's
                  */
+                new CustomAsyncTask().execute(response.body());
             }
 
             @Override
@@ -57,6 +67,20 @@ public class ApiResponseRepository {
             }
         });
         return venuesList;
+    }
+
+    class CustomAsyncTask extends AsyncTask<VenueSearches,Void,Void>{
+
+        @Override
+        protected Void doInBackground(VenueSearches... venueSearches) {
+            //Deleting old venue's, and will feed new location based venue's
+            if(venueSearches[0]!=null) {
+                databaseRequestDao.deleteVenues();
+                List<Venue> venueList = venueSearches[0].getResponse().getVenues();
+                databaseRequestDao.insertVenues(venueList);
+            }
+            return null;
+        }
     }
 
 }

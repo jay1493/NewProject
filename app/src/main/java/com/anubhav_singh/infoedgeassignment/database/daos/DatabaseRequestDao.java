@@ -10,6 +10,8 @@ import com.anubhav_singh.infoedgeassignment.models.Venue;
 
 import java.util.List;
 
+import javax.sql.DataSource;
+
 /**
  * Created by Anubhav-Singh on 06-02-2018.
  */
@@ -24,7 +26,9 @@ public interface DatabaseRequestDao {
     void updateVenues(Venue... venues);
 
     @Query("SELECT * FROM venue WHERE lat = :latitude AND lng = :longitude")
-    List<Venue> getVenues(double latitude, double longitude);
+    android.arch.paging.DataSource.Factory<Integer,Venue> getVenue(double latitude, double longitude);
+    @Query("SELECT * FROM venue")
+    android.arch.paging.DataSource.Factory<Integer,Venue> getVenues();
 
     @Query("DELETE FROM venue")
     void deleteVenues();

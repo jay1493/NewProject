@@ -7,7 +7,9 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverter;
 import android.arch.persistence.room.TypeConverters;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.recyclerview.extensions.DiffCallback;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,10 +21,11 @@ import com.google.gson.annotations.SerializedName;
 @Entity(tableName = "venue")
 public class Venue implements Serializable {
 
+    @PrimaryKey(autoGenerate = true)
+    private long venueUniqueId;
 
     @SerializedName("id")
     @Expose
-    @PrimaryKey
     private String id;
     @SerializedName("name")
     @Expose
@@ -261,5 +264,55 @@ public class Venue implements Serializable {
 
     public void setUserRemarks(@Nullable String userRemarks) {
         this.userRemarks = userRemarks;
+    }
+
+    public long getVenueUniqueId() {
+        return venueUniqueId;
+    }
+
+    public void setVenueUniqueId(long venueUniqueId) {
+        this.venueUniqueId = venueUniqueId;
+    }
+
+    public static DiffCallback<Venue> DIFF_CALLBACK = new DiffCallback<Venue>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Venue oldItem, @NonNull Venue newItem) {
+            return oldItem.getVenueUniqueId() == newItem.getVenueUniqueId();
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Venue oldItem, @NonNull Venue newItem) {
+            return oldItem.checkContents(newItem);
+        }
+    };
+
+    private boolean checkContents(Venue newItem) {
+        return this.equals(newItem);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Venue venue = (Venue) o;
+
+        if (id != null ? !id.equals(venue.id) : venue.id != null) return false;
+        if (name != null ? !name.equals(venue.name) : venue.name != null) return false;
+        if (location != null ? !location.equals(venue.location) : venue.location != null)
+            return false;
+        if (categories != null ? !categories.equals(venue.categories) : venue.categories != null)
+            return false;
+        return userRemarks != null ? userRemarks.equals(venue.userRemarks) : venue.userRemarks == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (location != null ? location.hashCode() : 0);
+        result = 31 * result + (categories != null ? categories.hashCode() : 0);
+        result = 31 * result + (userRemarks != null ? userRemarks.hashCode() : 0);
+        return result;
     }
 }

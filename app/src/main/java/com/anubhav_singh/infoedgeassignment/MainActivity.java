@@ -2,6 +2,7 @@ package com.anubhav_singh.infoedgeassignment;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.pm.PackageManager;
@@ -23,6 +24,7 @@ import android.view.ViewStub;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.anubhav_singh.infoedgeassignment.adapters.VenueAdapter;
 import com.anubhav_singh.infoedgeassignment.constants.ConstantUtill;
 import com.anubhav_singh.infoedgeassignment.viewModels.CustomNearbyPlacesViewModel;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
@@ -59,11 +61,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @BindView(R.id.no_result_found_stub)
     private ViewStub noResultFoundViewStub;
-    
+
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Location mLastLocation;
     private CustomNearbyPlacesViewModel customNearbyPlacesViewModel;
+    private VenueAdapter venueAdapter;
 
 
     @Override
@@ -95,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.black));
         customNearbyPlacesViewModel = ViewModelProviders.of(this).get(CustomNearbyPlacesViewModel.class);
         shimmerRecyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        venueAdapter = new VenueAdapter(this,shimmerRecyclerView);
+        shimmerRecyclerView.setAdapter(venueAdapter);
     }
 
     private boolean checkPlayServices() {
@@ -184,6 +189,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (mGoogleApiClient.isConnected()) {
             startLocationUpdates();
         }
+        customNearbyPlacesViewModel.getPagedVenueListLiveData().observe(this,pagedList -> {
+            venueAdapter.setList(pagedList);
+        });
+
     }
 
     @Override

@@ -15,6 +15,7 @@
     android:padding="@dimen/d10">
 
     <ImageView
+        android:id="@+id/iv_venue_recycler_item"
         android:layout_width="@dimen/d80"
         android:layout_height="@dimen/d80"
         android:src="@drawable/food_grey_placeholder"
