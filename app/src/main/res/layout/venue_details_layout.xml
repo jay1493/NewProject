@@ -20,16 +20,18 @@
         tools:context="com.anubhav_singh.infoedgeassignment.VenueDetailsActivity" />
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/demo_dark_transparent">
         <LinearLayout
             android:id="@+id/ll_venue_details_"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/d5">
+            android:padding="@dimen/d5"
+            android:background="@color/colorWhite">
             <ImageView
                 android:id="@+id/iv_venue_details"
-                android:layout_width="@dimen/d160"
+                android:layout_width="@dimen/d200"
                 android:layout_height="@dimen/d160"
                 android:scaleType="centerInside"
                 android:src="@color/demo_dark_transparent"
@@ -64,17 +66,25 @@
                     android:padding="@dimen/d2"
                     android:textColor="@color/colorDarkerBrown"
                     android:textStyle="bold"
-                    android:layout_gravity="center_horizontal"
                     android:ellipsize="end"
                     android:text=""
-                    android:gravity="center_horizontal"/>
+                    />
             </LinearLayout>
+
         </LinearLayout>
+        <View
+            android:id="@+id/view_"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/d2"
+            android:layout_below="@id/ll_venue_details_"
+            android:background="@color/demo_dark_transparent"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/ll_venue_details_"
-            android:orientation="vertical">
+            android:layout_below="@id/view_"
+            android:orientation="vertical"
+            android:background="@color/colorWhite"
+            android:layout_marginTop="@dimen/d30">
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/d2"
@@ -91,7 +101,7 @@
                 android:id="@+id/tv_user_review_venue_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/d2"
+                android:padding="@dimen/d10"
                 android:textColor="@color/colorLightBlack"
                 android:textStyle="italic"
                 android:maxLines="4"
@@ -106,7 +116,7 @@
             android:layout_alignParentBottom="true"
             android:orientation="vertical"
             android:background="@color/demo_dark_transparent"
-            android:padding="@dimen/d5"
+            android:padding="@dimen/d20"
             android:elevation="@dimen/d5">
           <View
               android:layout_width="match_parent"
@@ -118,8 +128,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorLightBlack"
                 android:textStyle="italic"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:gravity="center_horizontal|center_vertical"
                 android:textColorHint="@color/colorLightBlack"
                 android:hint="@string/enter_your_review_here"
                 android:text=""/>
