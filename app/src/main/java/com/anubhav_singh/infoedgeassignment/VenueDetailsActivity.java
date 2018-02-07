@@ -117,8 +117,6 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
             }
             if(!TextUtils.isEmpty(venuePicUrl)) {
                 Glide.with(this).load(venuePicUrl).into(ivVenuImage);
-            }else{
-                Glide.with(this).load(getResources().getDrawable(R.drawable.no_result_found_img_1)).into(ivVenuImage);
             }
             if(itemModel.getVenue()!=null && itemModel.getVenue().getPrice()!=null){
                 if(!TextUtils.isEmpty(itemModel.getVenue().getPrice().getMessage())){
