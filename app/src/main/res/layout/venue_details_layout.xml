@@ -97,21 +97,17 @@
                 android:gravity="center_horizontal"
                 android:textColor="@color/colorLightBlack"
                 android:textStyle="bold"/>
-            <ScrollView
+            <TextView
+                android:id="@+id/tv_user_review_venue_info"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="@dimen/d10">
-                <TextView
-                    android:id="@+id/tv_user_review_venue_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorLightBlack"
-                    android:textStyle="italic"
-                    android:maxLines="4"
-                    android:singleLine="false"
-                    android:ellipsize="end"/>
-            </ScrollView>
-
+                android:layout_height="wrap_content"
+                android:padding="@dimen/d10"
+                android:textColor="@color/colorLightBlack"
+                android:textStyle="italic"
+                android:textSize="@dimen/d12sp"
+                android:maxLines="4"
+                android:singleLine="false"
+                android:ellipsize="end"/>
 
         </LinearLayout>
         <LinearLayout
