@@ -273,7 +273,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onItemClick(View view, int position) {
       //Fire Next Activity
-        new ItemClickHandleAsyncTask().execute(((TextView)view.findViewById(R.id.hiddenVenueIdField)).getText().toString().trim());
+        if(venueAdapter.getCurrentList()!=null && venueAdapter.getCurrentList().size()>=position) {
+            new ItemClickHandleAsyncTask().execute(((TextView) view.findViewById(R.id.hiddenVenueIdField)).getText().toString().trim());
+        }else{
+            Toast.makeText(this, "Please be patient, and wait for adapter to load, try again!", Toast.LENGTH_SHORT).show();
+        }
         /*if(customNearbyPlacesViewModel.getPagedVenueListLiveData()!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue()!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue().size()>position &&customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue().get(position)!=null) {
             Intent intent = new Intent(MainActivity.this, VenueDetailsActivity.class);
             intent.putExtra(ConstantUtill.PARENT_INTENT_BUNDLE_KEY, customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue().get(position));
