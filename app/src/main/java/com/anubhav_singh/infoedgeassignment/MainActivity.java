@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     .getLastLocation(mGoogleApiClient);
             Log.e("", "displayLocation: ");
             if (mLastLocation != null) {
-                new CustomLocationCheckAsyncTask().execute();
+                new CustomLocationCheckAsyncTask().setmLastLocation(mLastLocation).execute();
 
 
             }
@@ -294,6 +294,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     class CustomLocationCheckAsyncTask extends AsyncTask<Void,Void,LocationEntity>{
 
+        private Location mLastLocationForAsync;
+
+        //BuilderPattern
+        public CustomLocationCheckAsyncTask setmLastLocation(Location mLastLocation) {
+            this.mLastLocationForAsync = mLastLocation;
+            return this;
+        }
+
         @Override
         protected LocationEntity doInBackground(Void... voids) {
             LocationEntity locationEntity = customNearbyPlacesViewModel.getDatabaseRequestDao().getSavedLocation();
@@ -305,17 +313,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             super.onPostExecute(locationEntity);
             if(locationEntity!=null){
                 /**Now check, if we are at same position, if yes, then don't hit service */
-                if(locationEntity.getLatitude() == mLastLocation.getLatitude() && locationEntity.getLongitude() == mLastLocation.getLongitude()){
-                    /*//Same Location
-                    if(venueAdapter.getCurrentList()==null || venueAdapter.getCurrentList()!=null && venueAdapter.getCurrentList().size() == 0) {
-                        //Only then load, otherwise don't
-                        customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation, false);
-                    }*/
-                }else{
-                    customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation,true);
+                if(!(locationEntity.getLatitude() == mLastLocationForAsync.getLatitude() && locationEntity.getLongitude() == mLastLocationForAsync.getLongitude())){
+                    customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocationForAsync,true);
                 }
             }else{
-                customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation,true);
+                customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocationForAsync,true);
             }
         }
     }
