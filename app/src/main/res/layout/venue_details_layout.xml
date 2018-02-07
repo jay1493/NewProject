@@ -106,7 +106,8 @@
             android:layout_alignParentBottom="true"
             android:orientation="vertical"
             android:background="@color/demo_dark_transparent"
-            android:padding="@dimen/d5">
+            android:padding="@dimen/d5"
+            android:elevation="@dimen/d5">
           <View
               android:layout_width="match_parent"
               android:layout_height="@dimen/d2"

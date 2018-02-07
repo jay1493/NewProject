@@ -7,6 +7,7 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
 import com.anubhav_singh.infoedgeassignment.database.entities.LocationEntity;
+import com.anubhav_singh.infoedgeassignment.database.entities.UserReviewEntity;
 import com.anubhav_singh.infoedgeassignment.models.Item;
 import com.anubhav_singh.infoedgeassignment.models.Venue;
 
@@ -25,14 +26,21 @@ public interface DatabaseRequestDao {
     void insertItems(List<Item> venues);
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertCurrentLocation(LocationEntity locationEntity);
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertUserReview(UserReviewEntity userReviewEntity);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateItems(Item... items);
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    void updateUserReview(UserReviewEntity... userReviewEntities);
+
 
     @Query("SELECT * FROM items")
     android.arch.paging.DataSource.Factory<Integer,Item> getItems();
     @Query("SELECT * FROM current_active_location")
     LocationEntity getSavedLocation();
+    @Query("SELECT * FROM user_reviews WHERE venueId LIKE :venueId")
+    UserReviewEntity getUserReviewFromVenueId(String venueId);
     @Query("SELECT * FROM items WHERE venueId LIKE :venueId")
     Item getVenueFromVenueId(String venueId);
 

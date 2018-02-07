@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
@@ -18,6 +19,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.anubhav_singh.infoedgeassignment.constants.ConstantUtill;
+import com.anubhav_singh.infoedgeassignment.database.ResturantsDatabase;
+import com.anubhav_singh.infoedgeassignment.database.daos.DatabaseRequestDao;
+import com.anubhav_singh.infoedgeassignment.database.entities.UserReviewEntity;
 import com.anubhav_singh.infoedgeassignment.models.Item;
 import com.anubhav_singh.infoedgeassignment.models.Photo;
 import com.anubhav_singh.infoedgeassignment.models.Venue;
@@ -55,18 +59,17 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
     @BindView(R.id.ll_personalized_review_for_venue)
     LinearLayout llPersonalizedReview;
     @BindView(R.id.tv_personal_review_venue_info)
-    LinearLayout tvPersonalizedReview;
+    TextView tvPersonalizedReview;
 
-    Fragment fragment;
-    private String venueID;
+
     private SupportMapFragment mapFragment;
     private Item itemModel;
     private GoogleMap mMap;
-    private CustomNearbyPlacesViewModel customNearbyPlacesViewModel;
-    private int pos;
-    private String updatedUserRemark;
     private LovelyTextInputDialog lovelyTextInputDialog;
     private StringBuilder venuePicUrl;
+    private DatabaseRequestDao databaseRequestDao;
+    private AsyncTask<Void, Void, String> refereshPersonalizedReviewAsyncTask;
+    private String venueUrl;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,31 +80,17 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
         fetchParentIntent();
 
     }
-    private void setUpMaterialDialog(int pos, View view) {
-        /**
-         * Commented
-         */
+    private void setUpMaterialDialog(View view) {
         lovelyTextInputDialog = new LovelyTextInputDialog(this)
                 .setTopColorRes(R.color.colorPrimary)
-                .setTitle("User Reviews")
+                .setTitle("Personalized User Review")
                 .setMessage("Enter the review for this venue")
                 .setConfirmButton("Save Review", new LovelyTextInputDialog.OnTextInputConfirmListener() {
                     @Override
                     public void onTextInputConfirmed(String text) {
                         //Update Venue
-                        updatedUserRemark = text;
-                       /* EditText editText = (EditText) view.findViewById(R.id.et_user_review_recycler_item);
-                        editText.setText(updatedUserRemark);
-                        String hiddenId = ((TextView) view.findViewById(R.id.hiddenVenueIdField)).getText().toString().trim();
-                        new VenueUpdateAsyncTask().execute(hiddenId);*/
-
-                        //Below code showing disrepancies in few areas...!!
-                      /* PagedList<Venue> venuePagedList =  customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue();
-                       if(venuePagedList!=null && venuePagedList.get(pos)!=null) {
-                           new VenueUpdateAsyncTask().execute(venuePagedList.get(pos).getId());
-                       }else{
-                           Toast.makeText(MainActivity.this, "There seems a problem while loading paginated data", Toast.LENGTH_SHORT).show();
-                       }*/
+                        tvPersonalizedReview.setText(text);
+                        new VenueUpdateAsyncTask().execute(text);
                     }
                 });
         lovelyTextInputDialog.show();
@@ -117,6 +106,9 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
                     tvUserVenueReview.setText(itemModel.getTips().get(0).getText());
                 }else{
                     tvUserVenueReview.setText(R.string.user_review_not_avaiable);
+                }
+                if(!TextUtils.isEmpty(itemModel.getTips().get(0).getCanonicalUrl())){
+                    venueUrl = itemModel.getTips().get(0).getCanonicalUrl();
                 }
                 Photo photo = itemModel.getTips().get(0).getUser().getPhoto();
                 venuePicUrl = new StringBuilder();
@@ -151,7 +143,7 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
 
     @OnClick(R.id.ll_personalized_review_for_venue)
     public void setUpClickListenerOnPersonalzedUserReview(View view){
-
+         setUpMaterialDialog(view);
     }
 
     private void setUpResources() {
@@ -160,9 +152,9 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        databaseRequestDao = ResturantsDatabase.create(this).getDatabaseRequestDao();
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map_venue_info);
-        customNearbyPlacesViewModel = ViewModelProviders.of(this).get(CustomNearbyPlacesViewModel.class);
         mapFragment.getMapAsync(this);
 
     }
@@ -175,7 +167,7 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
     @Override
     protected void onResume() {
         super.onResume();
-
+       refereshPersonalizedReviewAsyncTask = new RefereshPersonalizedUserReviews().execute();
 
     }
 
@@ -194,8 +186,10 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(ConstantUtill.DEFAULT_VENUE_INTENT_ACTION + venueID));
-        startActivity(browserIntent);
+        if(!TextUtils.isEmpty(venueUrl)) {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(ConstantUtill.DEFAULT_VENUE_INTENT_ACTION + venueUrl));
+            startActivity(browserIntent);
+        }
     }
 
     @Override
@@ -217,20 +211,43 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
             }
         }
     }
-    //    class VenueUpdateAsyncTask extends AsyncTask<String,Void,Void>{
-//
-//        @Override
-//        protected Void doInBackground(String... integers) {
-//            String pos = integers[0];
-//            if(customNearbyPlacesViewModel!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData()!=null){
-//               Venue venueToUpdate = customNearbyPlacesViewModel.getDatabaseRequestDao().getVenueFromVenueId(pos);
-//               if(venueToUpdate!=null){
-//                   venueToUpdate.setUserRemarks(updatedUserRemark);
-//                   customNearbyPlacesViewModel.getDatabaseRequestDao().updateVenues(venueToUpdate);
-//                   customNearbyPlacesViewModel.init();
-//               }
-//            }
-//            return null;
-//        }
-//    }
+         class VenueUpdateAsyncTask extends AsyncTask<String,Void,Void> {
+
+        @Override
+        protected Void doInBackground(String... integers) {
+            String updatedText = integers[0];
+            if(itemModel!=null && itemModel.getVenue()!=null){
+                UserReviewEntity userReviewEntity = databaseRequestDao.getUserReviewFromVenueId(itemModel.getVenue().getId());
+                if(userReviewEntity!=null){
+                    userReviewEntity.setUserReview(updatedText);
+                    databaseRequestDao.updateUserReview(userReviewEntity);
+                }else{
+                    databaseRequestDao.insertUserReview(new UserReviewEntity(itemModel.getVenue().getId(),updatedText));
+                }
+
+            }
+            return null;
+        }
+    }
+
+    class RefereshPersonalizedUserReviews extends AsyncTask<Void,Void,String>{
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            UserReviewEntity userReviewEntity = databaseRequestDao.getUserReviewFromVenueId(itemModel.getVenue().getId());
+            if(userReviewEntity!=null){
+                return userReviewEntity.getUserReview();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if(!TextUtils.isEmpty(s)){
+                tvPersonalizedReview.setText(s);
+            }
+        }
+    }
+
 }
