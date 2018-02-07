@@ -30,6 +30,8 @@ import com.anubhav_singh.infoedgeassignment.constants.ConstantUtill;
 import com.anubhav_singh.infoedgeassignment.database.entities.LocationEntity;
 import com.anubhav_singh.infoedgeassignment.listeners.CustomRecycleViewTouchListener;
 import com.anubhav_singh.infoedgeassignment.listeners.VenueItemClickListener;
+import com.anubhav_singh.infoedgeassignment.models.Item;
+import com.anubhav_singh.infoedgeassignment.models.Venue;
 import com.anubhav_singh.infoedgeassignment.viewModels.CustomNearbyPlacesViewModel;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.google.android.gms.common.ConnectionResult;
@@ -221,6 +223,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode){
@@ -266,13 +273,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onItemClick(View view, int position) {
       //Fire Next Activity
-        if(customNearbyPlacesViewModel.getPagedVenueListLiveData()!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue()!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue().size()>position &&customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue().get(position)!=null) {
+        new ItemClickHandleAsyncTask().execute(((TextView)view.findViewById(R.id.hiddenVenueIdField)).getText().toString().trim());
+        /*if(customNearbyPlacesViewModel.getPagedVenueListLiveData()!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue()!=null && customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue().size()>position &&customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue().get(position)!=null) {
             Intent intent = new Intent(MainActivity.this, VenueDetailsActivity.class);
             intent.putExtra(ConstantUtill.PARENT_INTENT_BUNDLE_KEY, customNearbyPlacesViewModel.getPagedVenueListLiveData().getValue().get(position));
             startActivity(intent);
         }else{
             Toast.makeText(this, "Please be patient, and wait for adapter to load, try again!", Toast.LENGTH_SHORT).show();
-        }
+        }*/
     }
 
     @Override
@@ -304,6 +312,28 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 }
             }else{
                 customNearbyPlacesViewModel.setVenuesBasedOnRefereshedLocation(mLastLocation,true);
+            }
+        }
+    }
+
+    class ItemClickHandleAsyncTask extends AsyncTask<String,Void,Item>{
+
+        @Override
+        protected Item doInBackground(String... strings) {
+            Item dbVenue = customNearbyPlacesViewModel.getDatabaseRequestDao().getVenueFromVenueId(strings[0]);
+            if(dbVenue!=null){
+                return dbVenue;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Item s) {
+            super.onPostExecute(s);
+            if(s!=null) {
+                Intent intent = new Intent(MainActivity.this, VenueDetailsActivity.class);
+                intent.putExtra(ConstantUtill.PARENT_INTENT_BUNDLE_KEY, s);
+                startActivity(intent);
             }
         }
     }

@@ -1,7 +1,5 @@
 package com.anubhav_singh.infoedgeassignment;
 
-import android.app.Fragment;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -25,7 +23,6 @@ import com.anubhav_singh.infoedgeassignment.database.entities.UserReviewEntity;
 import com.anubhav_singh.infoedgeassignment.models.Item;
 import com.anubhav_singh.infoedgeassignment.models.Photo;
 import com.anubhav_singh.infoedgeassignment.models.Venue;
-import com.anubhav_singh.infoedgeassignment.viewModels.CustomNearbyPlacesViewModel;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -90,7 +87,9 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
                     public void onTextInputConfirmed(String text) {
                         //Update Venue
                         tvPersonalizedReview.setText(text);
-                        new VenueUpdateAsyncTask().execute(text);
+
+                        new CustomAysncTask().setInputReviewText(text).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,AsyncTaskKeysEnum.SET_REVIEW_ASYNC.getKeyCode());
+
                     }
                 });
         lovelyTextInputDialog.show();
@@ -119,7 +118,7 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
             if(!TextUtils.isEmpty(venuePicUrl)) {
                 Glide.with(this).load(venuePicUrl).into(ivVenuImage);
             }else{
-                Glide.with(this).load(R.drawable.no_result_found_img_1).into(ivVenuImage);
+                Glide.with(this).load(getResources().getDrawable(R.drawable.no_result_found_img_1)).into(ivVenuImage);
             }
             if(itemModel.getVenue()!=null && itemModel.getVenue().getPrice()!=null){
                 if(!TextUtils.isEmpty(itemModel.getVenue().getPrice().getMessage())){
@@ -169,7 +168,7 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
     @Override
     protected void onResume() {
         super.onResume();
-       refereshPersonalizedReviewAsyncTask = new RefereshPersonalizedUserReviews().execute();
+       new CustomAysncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AsyncTaskKeysEnum.REFRESH_REVIEWS_ASYNC.getKeyCode());
 
     }
 
@@ -213,33 +212,38 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
             }
         }
     }
-         class VenueUpdateAsyncTask extends AsyncTask<String,Void,Void> {
+
+
+    class CustomAysncTask extends AsyncTask<Integer,Void,String>{
+
+        private String inputReviewText;
+
+        public CustomAysncTask setInputReviewText(String inputReviewText) {
+            this.inputReviewText = inputReviewText;
+            return this;
+        }
 
         @Override
-        protected Void doInBackground(String... integers) {
-            String updatedText = integers[0];
-            if(itemModel!=null && itemModel.getVenue()!=null){
+        protected String doInBackground(Integer... integers) {
+            if(integers[0] == AsyncTaskKeysEnum.SET_REVIEW_ASYNC.getKeyCode()){
+                String updatedText = inputReviewText;
+                if(itemModel!=null && itemModel.getVenue()!=null && !TextUtils.isEmpty(updatedText)){
+                    UserReviewEntity userReviewEntity = databaseRequestDao.getUserReviewFromVenueId(itemModel.getVenue().getId());
+                    if(userReviewEntity!=null){
+                        userReviewEntity.setUserReview(updatedText);
+                        databaseRequestDao.updateUserReview(userReviewEntity);
+                    }else{
+                        databaseRequestDao.insertUserReview(new UserReviewEntity(itemModel.getVenue().getId(),updatedText));
+                    }
+
+                }
+            }else if(integers[0] == AsyncTaskKeysEnum.REFRESH_REVIEWS_ASYNC.getKeyCode()){
                 UserReviewEntity userReviewEntity = databaseRequestDao.getUserReviewFromVenueId(itemModel.getVenue().getId());
                 if(userReviewEntity!=null){
-                    userReviewEntity.setUserReview(updatedText);
-                    databaseRequestDao.updateUserReview(userReviewEntity);
-                }else{
-                    databaseRequestDao.insertUserReview(new UserReviewEntity(itemModel.getVenue().getId(),updatedText));
+                    return userReviewEntity.getUserReview();
                 }
-
             }
-            return null;
-        }
-    }
 
-    class RefereshPersonalizedUserReviews extends AsyncTask<Void,Void,String>{
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            UserReviewEntity userReviewEntity = databaseRequestDao.getUserReviewFromVenueId(itemModel.getVenue().getId());
-            if(userReviewEntity!=null){
-                return userReviewEntity.getUserReview();
-            }
             return null;
         }
 
@@ -252,4 +256,17 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
         }
     }
 
+  enum AsyncTaskKeysEnum{
+        REFRESH_REVIEWS_ASYNC(1),SET_REVIEW_ASYNC(2);
+
+      private int keyCode;
+
+      AsyncTaskKeysEnum(int i) {
+          keyCode = i;
+      }
+
+      public int getKeyCode() {
+          return keyCode;
+      }
+  }
 }

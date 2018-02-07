@@ -15,4 +15,5 @@
     <string name="not_available">Not Available</string>
     <string name="timings_n_a">Timings N/A</string>
     <string name="user_review_not_avaiable">User Reviews Not Available for this Venue...</string>
+    <string name="personalized_review">Personalized Review :</string>
 </resources>

@@ -92,7 +92,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="User Review :"
+                android:text="@string/user_review"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_horizontal"
                 android:textColor="@color/colorLightBlack"
@@ -116,8 +116,16 @@
             android:layout_alignParentBottom="true"
             android:orientation="vertical"
             android:background="@color/demo_dark_transparent"
-            android:padding="@dimen/d20"
             android:elevation="@dimen/d5">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/personalized_review"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:textColor="@color/colorLightBlack"
+                android:textStyle="bold"
+                android:padding="@dimen/d2"/>
           <View
               android:layout_width="match_parent"
               android:layout_height="@dimen/d2"
@@ -128,6 +136,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorLightBlack"
                 android:textStyle="italic"
+                android:padding="@dimen/d5"
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:gravity="center_horizontal|center_vertical"
                 android:textColorHint="@color/colorLightBlack"

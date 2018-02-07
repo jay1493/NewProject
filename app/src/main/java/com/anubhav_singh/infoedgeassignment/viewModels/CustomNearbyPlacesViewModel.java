@@ -40,8 +40,8 @@ public class CustomNearbyPlacesViewModel extends AndroidViewModel {
 
     public void init(){
         pagedListConfig =
-                (new PagedList.Config.Builder()).setEnablePlaceholders(true)
-                        .setPrefetchDistance(ConstantUtill.PAGED_LIST_FETCH_DIST)
+                (new PagedList.Config.Builder())
+                        .setPrefetchDistance(ConstantUtill.PAGED_LIST_FETCH_DIST).setEnablePlaceholders(false)
                         .setPageSize(ConstantUtill.PAGED_LIST_DEF_PAGE_SIZE).build();
         pagedVenueListLiveData = (new LivePagedListBuilder<>(databaseRequestDao.getItems(),pagedListConfig)).build();
 
@@ -63,6 +63,7 @@ public class CustomNearbyPlacesViewModel extends AndroidViewModel {
     }
 
     public LiveData<PagedList<Item>> getPagedVenueListLiveData(){
+        init();
         return pagedVenueListLiveData;
     }
 
