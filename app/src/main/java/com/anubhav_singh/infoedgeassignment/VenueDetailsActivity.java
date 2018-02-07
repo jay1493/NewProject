@@ -100,23 +100,36 @@ public class VenueDetailsActivity  extends AppCompatActivity implements OnMapRea
             itemModel = (Item) getIntent().getSerializableExtra(ConstantUtill.PARENT_INTENT_BUNDLE_KEY);
         }
         if(itemModel!=null){
-            if(itemModel.getTips()!=null && itemModel.getTips().size()>0 && itemModel.getTips().get(0).getUser()!=null && itemModel.getTips().get(0).getUser().getPhoto()!=null){
+            if(itemModel.getTips()!=null && itemModel.getTips().size()>0){
+                StringBuilder userReviewBuilder = new StringBuilder();
                 if(!TextUtils.isEmpty(itemModel.getTips().get(0).getText())){
-                    tvUserVenueReview.setText(itemModel.getTips().get(0).getText());
-                }else{
-                    tvUserVenueReview.setText(R.string.user_review_not_avaiable);
+                    userReviewBuilder.append(itemModel.getTips().get(0).getText());
+
                 }
                 if(!TextUtils.isEmpty(itemModel.getTips().get(0).getCanonicalUrl())){
                     venueUrl = itemModel.getTips().get(0).getCanonicalUrl();
                 }
-                Photo photo = itemModel.getTips().get(0).getUser().getPhoto();
-                venuePicUrl = new StringBuilder();
-                if(!TextUtils.isEmpty(photo.getPrefix()) && !TextUtils.isEmpty(photo.getSuffix())){
-                    venuePicUrl.append(photo.getPrefix()).append("100x100").append(photo.getSuffix());
+                if(itemModel.getTips().get(0).getUser() != null ) {
+                    if(userReviewBuilder.length()>0){
+                        userReviewBuilder.append(" - ").append(itemModel.getTips().get(0).getUser().getFirstName()).append(" ").append(itemModel.getTips().get(0).getUser().getLastName());
+                    }
+                    if (itemModel.getTips().get(0).getUser().getPhoto() != null) {
+                        Photo photo = itemModel.getTips().get(0).getUser().getPhoto();
+                        venuePicUrl = new StringBuilder();
+                        if (!TextUtils.isEmpty(photo.getPrefix()) && !TextUtils.isEmpty(photo.getSuffix())) {
+                            venuePicUrl.append(photo.getPrefix()).append("100x100").append(photo.getSuffix());
+                        }
+                    }
+                }
+                if(userReviewBuilder.length()>0){
+                    tvUserVenueReview.setText(userReviewBuilder.toString());
+                }else{
+                    tvUserVenueReview.setText(R.string.user_review_not_avaiable);
                 }
             }
             if(!TextUtils.isEmpty(venuePicUrl)) {
-                Glide.with(this).load(venuePicUrl).into(ivVenuImage);
+                //TODO Comment for now, just to see layout...
+//                Glide.with(this).load(venuePicUrl).into(ivVenuImage);
             }
             if(itemModel.getVenue()!=null && itemModel.getVenue().getPrice()!=null){
                 if(!TextUtils.isEmpty(itemModel.getVenue().getPrice().getMessage())){
